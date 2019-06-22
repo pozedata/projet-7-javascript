@@ -21,3 +21,63 @@ body, header, html {
 	background-size: cover;
     /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ; */
 }
+
+/* ================= map + coté ================ */
+
+#mapTemplate{
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.titleContainer{
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+
+.list {
+    background-color: blue;
+    height: 550px;
+}
+.map {
+    background-color: blue;
+    height: 550px;
+
+}
+.description {
+    background-color: blue;
+    height: 550px;
+
+}
+
+/* ================= formaulaire restaurant ================ */
+#restaurantForm {
+    margin-bottom: 5%;
+}
+.formForRetaurant {
+    background-color: blue;
+    height: 250px;
+}
+
+/* ================= footer ================ */
+footer {
+	width: 100%;
+	background-color: #1a1a1a;
+	padding: 2%;
+	color: white;
+}
+
+footer .fab {
+	padding: 2%;
+	font-size: 250%;
+	color: white;
+}
+
+footer h4 {
+margin-bottom: 10%;
+}
+
+footer img {
+    height: 150px;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 1);
+}
