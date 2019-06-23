@@ -19,14 +19,50 @@ body, header, html {
 	position: relative;
 	width: 100%;
 	background-size: cover;
-    /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ; */
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
+}
+
+#titleSVG {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+}
+
+path {
+	stroke: rgb(0, 0, 0);
+	fill: rgb(0, 0, 0);
+	stroke-dasharray: 2200;
+	opacity: 10;
+	animation: animate 3s cubic-bezier(0,0.23,1,.1);
+}
+
+@keyframes animate {
+	0% {
+		opacity: 0;
+		fill: none;
+		stroke-dashoffset: 2200;
+	}
+	30% {
+		opacity: 10;
+		fill: none;
+		stroke-dashoffset: 2200;
+	}
+	90% {
+		fill: rgba(0, 0, 0, 0);
+	}
+	100% {
+		opacity: 10;
+		fill: rgb(0, 0, 0);
+		stroke-dashoffset: none;
+	}
 }
 
 /* ================= map + coté ================ */
 
 #mapTemplate{
     margin-top: 5%;
-    margin-bottom: 5%;
 }
 
 .titleContainer{
@@ -34,37 +70,65 @@ body, header, html {
     margin-bottom: 5%;
 }
 
-
 .list {
-    background-color: blue;
+    background: url(img/background7.jpg) no-repeat center center fixed;
+    background-size: cover;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
     height: 550px;
 }
 .map {
-    background-color: blue;
+    background: url(img/background7.jpg) no-repeat center center fixed;
+    background-size: cover;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
     height: 550px;
-
 }
 .description {
-    background-color: blue;
+    background: url(img/background7.jpg) no-repeat center center fixed;
+    background-size: cover;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
     height: 550px;
-
 }
 
 /* ================= formaulaire restaurant ================ */
 #restaurantForm {
-    margin-bottom: 5%;
+    margin-top: 5%;
 }
 .formForRetaurant {
-    background-color: blue;
-    height: 250px;
+    background: url(../img/fondForm3.jpeg) no-repeat center center fixed;
+    display: table;
+    height: 450px;
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
 }
+
+/* ================= Top ================ */
+#top {
+    margin-top: 5%;
+}
+
+.top {
+    background: url(img/background7.jpg) no-repeat center center fixed;
+    display: table;
+    height: 250px;
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+
 
 /* ================= footer ================ */
 footer {
 	width: 100%;
 	background-color: #1a1a1a;
 	padding: 2%;
-	color: white;
+    color: white;
+    margin-top: 5%;
 }
 
 footer .fab {
