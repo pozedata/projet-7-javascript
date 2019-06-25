@@ -1,0 +1,98 @@
+[
+    {
+        "restaurantName":"Bronco",
+        "address":"39 Rue des Petites Écuries, 75010 Paris",
+        "lat":48.8737815,
+        "long":2.3501649,
+        "ratings":[
+            {
+                "stars":4,
+                "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+            },
+            {
+                "stars":5,
+                "comment":"Tout simplement mon restaurant préféré !"
+            }
+        ]
+    },
+    {
+        "restaurantName":"Babalou",
+        "address":"4 Rue Lamarck, 75018 Paris",
+        "lat":48.8865035,
+        "long":2.3442197,
+        "ratings":[
+            {
+                "stars":5,
+                "comment":"Une minuscule pizzeria délicieuse cachée juste à côté du Sacré choeur !"
+            },
+            {
+                "stars":3,
+                "comment":"J'ai trouvé ça correct, sans plus"
+            }
+        ]
+    },
+    {
+        "restaurantName":"Sacrée fleur",
+        "address":"50 Rue de Clignancourt, 75018 Paris",
+        "lat":48.887605,
+        "long":2.347979,
+        "ratings":[
+            {
+                "stars":4,
+                "comment":"C'est vraiment bon ! Cosy, chaleureux...juste les tables sont collées donc pas très intime. Je recommande"
+            },
+            {
+                "stars":4,
+                "comment":"Bon restaurant japonais près de Gare du nord qui propose de bon plats, prix normaux."
+            }
+        ]
+    },
+    {
+        "restaurantName":"Carotte Bleue",
+        "address":"102 Rue Doudeauville, 75018 Paris",
+        "lat":48.888568,
+        "long":2.348442,
+        "ratings":[
+            {
+                "stars":3,
+                "comment":"Carte sympa et bon rapport qualité prix mais propriétaire qui a tout à apprendre du service et de l’amabilité."
+            },
+            {
+                "stars":4,
+                "comment":"Bar sympa avec une tres bonne carte pour manger. A recommander"
+            }
+        ]
+    },
+    {
+        "restaurantName":"Polissons",
+        "address":"35 Rue Ramey, 75018 Paris",
+        "lat":48.889150,
+        "long":2.346267,
+        "ratings":[
+            {
+                "stars":5,
+                "comment":"Juste au top"
+            },
+            {
+                "stars":5,
+                "comment":"Des produits frais et bien cuisinés avec de belles associations de saveur! Une table de qualité !"
+            }
+        ]
+    },
+    {
+        "restaurantName":"Pizzeria Ramey",
+        "address":"38 Rue Ramey, 75018 Paris",
+        "lat":48.889767,
+        "long":2.346191,
+        "ratings":[
+            {
+                "stars":1,
+                "comment":"Tres déçue. 30 Minutes de retard, pizza médiocre, lasagnes moyennes également, passez votre chemin."
+            },
+            {
+                "stars":3,
+                "comment":"Prix raisonnable, mais cuisine sans exception "
+            }
+        ]
+    }
+]

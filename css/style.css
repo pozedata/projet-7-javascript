@@ -70,21 +70,22 @@ path {
     margin-bottom: 5%;
 }
 
-.list {
-    background: url() no-repeat center center fixed;
-    background-size: cover;
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
+.list-group {
+    /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ; */
     height: 550px;
 }
+
+.list-group button {
+    background-color: #2c2c2c;
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1) inset;
+}
+
 .map {
-    background: url() no-repeat center center fixed;
-    background-size: cover;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
     height: 550px;
 }
 .description {
-    background: url() no-repeat center center fixed;
-    background-size: cover;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
     height: 550px;
 }
