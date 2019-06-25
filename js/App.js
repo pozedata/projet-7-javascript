@@ -5,9 +5,8 @@ class App {
 
     test(){
         this.restTest.getElementRestaurant();
+        this.restTest.createTagList();
     }
-
-
 }
 
 
