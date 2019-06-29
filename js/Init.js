@@ -1,2 +1,3 @@
 const app = new App();
-app.test();
+app.createObjectRestaurant();
+app.initMap();

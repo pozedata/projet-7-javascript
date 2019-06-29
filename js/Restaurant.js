@@ -1,12 +1,11 @@
 class Restaurant {
-    constructor(){
-        this.name;
-        this.adress;
-        this.lat;
-        this.long;
-        this.ratings;
-        this.stars=[];
-        this.comment=[];
+    constructor(name, adress, lat, long, stars, comment){
+        this.name = name;
+        this.adress = adress;
+        this.lat = lat;
+        this.long = long;
+        this.stars = stars;
+        this.comment = comment;
     }
 
     getElementRestaurant(){
@@ -14,10 +13,11 @@ class Restaurant {
             this.name = elt[0].restaurantName;
             console.log(this.name);
         });
+        console.log(this.name);
     }
 
     createTagList() {
-        let buttonList = ('<button type="button" class="list-group-item list-group-item-action">' + this.name + '</button>');
+        let buttonList = ('<button type="button" class="list-group-item list-group-item-action" id="Btn-'+ this.name +'">' + this.name + '</button>');
         $('#listGroup').append(buttonList);
     }
 }

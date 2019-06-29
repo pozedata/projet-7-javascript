@@ -30,11 +30,11 @@ body, header, html {
     width: 40%;
 }
 
-path {
+#animSVG path {
 	stroke: rgb(0, 0, 0);
 	fill: rgb(0, 0, 0);
 	stroke-dasharray: 2200;
-	opacity: 10;
+	opacity: 1;
 	animation: animate 3s cubic-bezier(0,0.23,1,.1);
 }
 
@@ -82,7 +82,7 @@ path {
 }
 
 .map {
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
+    /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ; */
     height: 550px;
 }
 .description {
