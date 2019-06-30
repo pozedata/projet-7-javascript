@@ -1,23 +1,14 @@
 class Restaurant {
-    constructor(name, adress, lat, long, stars, comment){
+    constructor(name, adress, lat, long, ratings){
         this.name = name;
         this.adress = adress;
         this.lat = lat;
         this.long = long;
-        this.stars = stars;
-        this.comment = comment;
-    }
-
-    getElementRestaurant(){
-        $.getJSON('../JSON/restaurant.json', (elt)=> {
-            this.name = elt[0].restaurantName;
-            console.log(this.name);
-        });
-        console.log(this.name);
+        this.ratings = ratings;
     }
 
     createTagList() {
-        let buttonList = ('<button type="button" class="list-group-item list-group-item-action" id="Btn-'+ this.name +'">' + this.name + '</button>');
+        let buttonList = ('<button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="Btn-'+ this.name +'">' + this.name + '<span class="badge badge-primary badge-pill">14</span></button>');
         $('#listGroup').append(buttonList);
     }
 }

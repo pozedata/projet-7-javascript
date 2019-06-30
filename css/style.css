@@ -30,7 +30,7 @@ body, header, html {
     width: 40%;
 }
 
-#animSVG path {
+path {
 	stroke: rgb(0, 0, 0);
 	fill: rgb(0, 0, 0);
 	stroke-dasharray: 2200;

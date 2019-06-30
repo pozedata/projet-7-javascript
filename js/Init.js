@@ -1,3 +1,5 @@
-const app = new App();
-app.createObjectRestaurant();
-app.initMap();
+window.onload=()=>{
+    const app = new App();
+    app.initMap();
+}
+
