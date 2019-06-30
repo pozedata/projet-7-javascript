@@ -8,28 +8,17 @@ class App {
     // methode qui créer les restau
     createObjectRestaurant() {
 
-            // $.getJSON('../JSON/restaurant.json', (elt)=> {
-            //     this.giveNameElement(elt)
-            // });
+        $.getJSON('../JSON/restaurant.json', (elt)=> {
+            this.listRestaurant = elt;
+        });
     }
 
-    giveNameElement(elt) {
-        this.listRestaurant = elt;
-    }
-    
-
-    initMap() {
-            this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
-                center: {lat: -34.397, lng: 150.644},
-                zoom: 8
-            });
-    }
-
-    test(){
-    //     this.restTest.getElementRestaurant();
-    //     this.restTest.createTagList();
-    console.log(this.listRestaurant);
-    }
+    // initMap() {
+    //     this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
+    //         center: {lat: -34.397, lng: 150.644},
+    //         zoom: 8
+    //     });
+    // }
 }
 
 
