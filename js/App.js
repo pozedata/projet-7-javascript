@@ -8,7 +8,7 @@ class App {
     // methode qui créer les restau
     createObjectRestaurant() {
         $.getJSON('../JSON/restaurant.json', (elt)=> {
-            console.log(elt);
+            // console.log(elt);
             for (let restau of elt) {
                 let restaurant = new Restaurant(restau.restaurantName, restau.address, restau.lat, restau.long, restau.ratings);
                 this.listRestaurant.push(restaurant);
@@ -26,7 +26,6 @@ class App {
 
     displayRestaurantList(){
         for (let restaurant of this.listRestaurant) {
-            console.log(restaurant.ratings);
             restaurant.createTagList();
         }
     }
