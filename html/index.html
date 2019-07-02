@@ -23,10 +23,24 @@
 
     <section class="container-fluid" id="mapTemplate">
         <h1 class="titleContainer">Trouvez votre restaurant !</h1>
-        <div class="row">
+        <div class="row" id="test">
             <div class="col-lg-3 col-12">
-                <div class="list-group overflow-auto" id="listGroup">
-                </div>
+                <div class="list-group overflow-auto" id="listGroup"></div>
+                <form class="form-row" id="formList">
+                    <label for="form-control">sélectionné les meilleures restaurants !</label>
+                    <div class="col-8">
+                        <select class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-primary" type="submit">valider</button>
+                    </div>
+                </form>
             </div>
             <div class="col-lg-6 col-12">
                 <div class ="map" id="mapGoogle"></div>

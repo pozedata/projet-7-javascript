@@ -13,11 +13,13 @@ class Restaurant {
         this.createAverageStars();
     };
 
+    // création du <li> du restaurant 
     createTagList() {
-        let buttonList = ('<button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="Btn-'+ this.name +'">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'/5</span></button>');
+        let buttonList = ('<button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="Btn-'+ this.name +'">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'</span></button>');
         $('#listGroup').append(buttonList);
     };
 
+    // récup des notes et commentaires du restaurant
     splitRatings(){
         for (let elt of this.ratings) {
             this.stars.push(elt.stars);
@@ -25,6 +27,7 @@ class Restaurant {
         }
     };
 
+    // création dela moyenne des notes du restaurant 
     createAverageStars(){
         let addition = 0;
         for (let i=0; i<=this.stars.length-1; i++) {
@@ -32,4 +35,11 @@ class Restaurant {
         }
         this.averageStar = addition/this.stars.length;
     };
+
+    // création du marqueur sur la map
+    createMarker(marker, map) {
+        var posMarker = {lat: this.lat, lng: this.long};
+        marker = new google.maps.Marker({position: posMarker, map: map});
+    }
+    
 }

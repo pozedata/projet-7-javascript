@@ -32,18 +32,18 @@
         ]
     },
     {
-        "restaurantName":"Sacrée fleur",
-        "address":"50 Rue de Clignancourt, 75018 Paris",
-        "lat":48.887605,
-        "long":2.347979,
+        "restaurantName":"L'Ange Gourmand",
+        "address":"91 Rue Antoine de Très, 84240 La Tour-d'Aigues",
+        "lat":43.725155,
+        "long":5.547930,
         "ratings":[
             {
-                "stars":4,
+                "stars":5,
                 "comment":"C'est vraiment bon ! Cosy, chaleureux...juste les tables sont collées donc pas très intime. Je recommande"
             },
             {
-                "stars":4,
-                "comment":"Bon restaurant japonais près de Gare du nord qui propose de bon plats, prix normaux."
+                "stars":5,
+                "comment":"Bonne ambiance. Les produits sont frais et les plats succulents. Jamais déçu. Je recommande vivement."
             }
         ]
     },
@@ -64,18 +64,18 @@
         ]
     },
     {
-        "restaurantName":"Polissons",
-        "address":"35 Rue Ramey, 75018 Paris",
-        "lat":48.889150,
-        "long":2.346267,
+        "restaurantName":"Brasserie du Château",
+        "address":"116 Boulevard de la République, 84240 La Tour-d'Aigues",
+        "lat":43.726521,
+        "long":5.549122,
         "ratings":[
             {
-                "stars":5,
-                "comment":"Juste au top"
+                "stars":4,
+                "comment":"Belle terrasse. Nourriture excellente et service rapide, souriant et avenant"
             },
             {
-                "stars":5,
-                "comment":"Des produits frais et bien cuisinés avec de belles associations de saveur! Une table de qualité !"
+                "stars":4,
+                "comment":"Bonne petite brasserie. Très bon accueil. Choix des plats. Bons produits, bien cuisinés."
             }
         ]
     },

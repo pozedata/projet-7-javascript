@@ -71,8 +71,7 @@ path {
 }
 
 .list-group {
-    /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ; */
-    height: 550px;
+    height: 440px;
 }
 
 .list-group button {
@@ -82,12 +81,19 @@ path {
 }
 
 .map {
-    /* box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ; */
-    height: 550px;
+    min-height: 550px;
 }
 .description {
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
     height: 550px;
+}
+
+form button {
+    width: 100%;
+}
+
+#formList {
+    height: 110px; 
 }
 
 /* ================= formaulaire restaurant ================ */
@@ -110,8 +116,6 @@ path {
 }
 
 .top {
-    background: url(img/background7.jpg) no-repeat center center fixed;
-    display: table;
     height: 250px;
     position: relative;
     width: 100%;
