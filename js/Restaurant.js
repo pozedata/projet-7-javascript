@@ -15,7 +15,7 @@ class Restaurant {
 
     // création du <li> du restaurant 
     createTagList() {
-        let buttonList = ('<button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="Btn-'+ this.name +'">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'</span></button>');
+        let buttonList = ('<button type="button" id="btn-'+this.name+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="Btn-'+ this.name +'">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'</span></button>');
         $('#listGroup').append(buttonList);
     };
 
@@ -39,7 +39,19 @@ class Restaurant {
     // création du marqueur sur la map
     createMarker(marker, map) {
         var posMarker = {lat: this.lat, lng: this.long};
-        marker = new google.maps.Marker({position: posMarker, map: map});
+        marker = new google.maps.Marker({
+            position: posMarker, 
+            // label: this.name,
+            map: map
+        });
+    }
+
+    showDescription() {
+        $('#btn-'+this.name+'').on("click",function() {
+            // $('.description').text("salut");
+            console.log('salut');
+        });
+        console.log($('#btn-'+this.name+''));
     }
     
 }
