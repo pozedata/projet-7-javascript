@@ -3,18 +3,20 @@ class App {
         this.listRestaurant = [];
         this.map;
         // this.map = new Map();
+        // this.map.initMap();
         this.infoWindow;
-        this.marker;
+        this.markerUser;
 
         this.createObjectRestaurant();
-        // this.map.initMap();
+        
     }
 
     // methode qui créer les objet restaurant
     createObjectRestaurant() {
         $.getJSON('../JSON/restaurant.json', (elt)=> {
             for (let restau of elt) {
-                let restaurant = new Restaurant(restau.restaurantName, restau.address, restau.lat, restau.long, restau.ratings);
+                let id = this.listRestaurant.length
+                let restaurant = new Restaurant(id, restau.restaurantName, restau.address, restau.lat, restau.long, restau.ratings);
                 this.listRestaurant.push(restaurant);
             }
             this.displayRestaurantElt();
@@ -35,9 +37,14 @@ class App {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
+            this.markerUser = new google.maps.Marker({
+                position: pos, 
+                map: this.map,
+                icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+            });
       
             this.infoWindow.setPosition(pos);
-            this.infoWindow.setContent('Location found.');
+            this.infoWindow.setContent('Vous êtes ici');
             this.infoWindow.open(this.map);
             this.map.setCenter(pos);
           }, 
@@ -55,13 +62,13 @@ class App {
         infoWindow.setContent(browserHasGeolocation ?
             'Error: The Geolocation service failed.' :
             'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
+        infoWindow.open(this.map);
     }
 
     displayRestaurantElt(){
         for (let restaurant of this.listRestaurant) {
             restaurant.createTagList();
-            restaurant.createMarker(this.marker, this.map);
+            restaurant.createMarker(this.map);
             restaurant.showDescription();
         }
     }

@@ -1,5 +1,6 @@
 class Restaurant {
-    constructor(name, adress, lat, long, ratings){
+    constructor(id, name, adress, lat, long, ratings){
+        this.id = id;
         this.name = name;
         this.adress = adress;
         this.lat = lat;
@@ -8,6 +9,7 @@ class Restaurant {
         this.comments = [];
         this.stars = [];
         this.averageStar;
+        this.marker;
 
         this.splitRatings();
         this.createAverageStars();
@@ -15,7 +17,7 @@ class Restaurant {
 
     // création du <li> du restaurant 
     createTagList() {
-        let buttonList = ('<button type="button" id="btn-'+this.name+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="Btn-'+ this.name +'">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'</span></button>');
+        let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'</span></button>');
         $('#listGroup').append(buttonList);
     };
 
@@ -37,21 +39,21 @@ class Restaurant {
     };
 
     // création du marqueur sur la map
-    createMarker(marker, map) {
-        var posMarker = {lat: this.lat, lng: this.long};
-        marker = new google.maps.Marker({
+    createMarker(map) {
+        let posMarker = {lat: this.lat, lng: this.long};
+        this.marker = new google.maps.Marker({
             position: posMarker, 
-            // label: this.name,
             map: map
         });
     }
 
     showDescription() {
-        $('#btn-'+this.name+'').on("click",function() {
-            // $('.description').text("salut");
-            console.log('salut');
+        $('#btn-'+this.id+'').on("click",()=> {
+            $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location=46.414382,10.013988&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+            $('.card-body h5').text(this.name);
+            $('#com1').text(this.comments[0]);
+            $('#com2').text(this.comments[1]);
         });
-        console.log($('#btn-'+this.name+''));
     }
     
 }

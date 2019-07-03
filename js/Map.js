@@ -1,9 +1,9 @@
 class Map {
-    constructor(){
-        this.map;
+    constructor(map){
+        this.map = map;
         this.infoWindow;
     }
-    
+
     initMap() {
         this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
             center: {lat: 48.888568, lng: 2.348442},
@@ -24,7 +24,7 @@ class Map {
             this.infoWindow.open(this.map);
             this.map.setCenter(pos);
             }, 
-            function() {
+            ()=> {
                 this.handleLocationError(true, this.infoWindow, this.map.getCenter());
             });
       } else {
@@ -38,6 +38,6 @@ class Map {
         infoWindow.setContent(browserHasGeolocation ?
             'Error: The Geolocation service failed.' :
             'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
+        infoWindow.open(this.map);
     }
 }
