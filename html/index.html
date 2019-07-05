@@ -38,7 +38,7 @@
                         </select>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-primary" id="valForm" type="submit">valider</button>
+                        <button class="btn btn-outline-primary" id="valForm" type="submit">valider</button>
                     </div>
                 </form>
             </div>
@@ -48,12 +48,19 @@
             <div class="col-lg-3 col-12">
                 <div class ="description">
                     <div class="card overflow-auto">
-                        <img src="" class="card-img-top">
+                        <img class="card-img-top">
                         <div class="card-body">
                             <h5 class="card-title">Card title</h5>
+                            <hr>
+                            <p id="starAverage"></p>
+                            <p id="address"></p>
+                            <hr>
+                            <h6><em>commentaires: </em></h6>
                             <p class="card-text" id="com1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia dolorum laboriosam, officiis necessitatibus nulla architecto tempora nihil totam ullam recusandae ipsam quaerat rem dolorem consectetur ad mollitia numquam iste error.</p>
                             <p class="card-text" id="com2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia dolorum laboriosam, officiis necessitatibus nulla architecto tempora nihil totam ullam recusandae ipsam quaerat rem dolorem consectetur ad mollitia numquam iste error.</p>
-                            <button class="btn btn-primary">Afficher tous les commentaires</button>
+                        </div>
+                        <div class="card-footer">
+                            <button data-toggle="modal" class="btn btn-outline-primary btn-block" id="btnCom">Afficher tous les commentaires</button>
                         </div>
                     </div>
                 </div>
@@ -100,6 +107,40 @@
             </div>
         </div>
     </section>
+
+    <!-- ============================= Modal ====================================== -->
+
+    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Commentaires</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- <div class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Plus d'informations</h4>
+                </div>
+                <div class="modal-body">
+                    Le Tigre (Panthera tigris) est un mammifère carnivore de la famille des félidés...
+                </div>
+                <div class="modal-footer">
+                    <em>Informations sous réserve</em>
+                </div>
+            </div>
+        </div>
+    </div> -->
 
     <footer class="container-fluid text-center">
         <div class="row">

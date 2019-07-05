@@ -49,11 +49,39 @@ class Restaurant {
 
     showDescription() {
         $('#btn-'+this.id+'').on("click",()=> {
-            $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location=46.414382,10.013988&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+            $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.lat+','+this.long+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
             $('.card-body h5').text(this.name);
-            $('#com1').text(this.comments[0]);
-            $('#com2').text(this.comments[1]);
+            $('#starAverage').text('Note du restaurant : '+this.averageStar+'/5');
+            $('#address').text('Adresse: '+this.adress+'');
+            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+            $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
+            this.colorAverageStar();
+            this.showAllComm();
         });
     }
-    
+
+    colorAverageStar() {
+        if (this.averageStar >= 4) {
+            $('#starAverage').css('color', 'lightgreen');
+        }
+        else if (this.averageStar >= 3) {
+            $('#starAverage').css('color', 'orange');
+        }
+        else {
+            $('#starAverage').css('color', 'red');
+        }
+    }
+
+        // je devrait plutôt créer la boite modal en js ou html ? 
+    showAllComm(){
+        $('.modal').attr('id', ''+this.id+'-modal');
+        $('#btnCom').attr('data-target', '#'+this.id+'-modal');
+        for (let i=0; i< this.comments.length; i++) {
+            let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[1]+'/5)');
+            $('.modal-body').append($comment);
+        }
+        $('#btnCom').click(()=>{
+            $('.modal').modal('show');
+        });
+    }
 }
