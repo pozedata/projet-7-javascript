@@ -6,8 +6,12 @@ class App {
         // this.map.initMap();
         this.infoWindow;
         this.markerUser;
-
+        this.averageRestaurantRating = [];
+        this.highestRated; // comment faire si j'ai plusieurs restaurant avec la meilleure note posible ? 
+        this.newListRestaurant = [];
+        
         this.createObjectRestaurant();
+        this.selectionRestaurantByRating();
         
     }
 
@@ -21,6 +25,7 @@ class App {
             }
             this.displayRestaurantElt();
         });
+        // console.log(Math.max(...this.averageRestaurantRating));
     }
 
     initMap() {
@@ -69,7 +74,48 @@ class App {
         for (let restaurant of this.listRestaurant) {
             restaurant.createTagList();
             restaurant.createMarker(this.map);
-            restaurant.showDescription();
+            $('#btn-'+restaurant.id+'').on("click",()=> {
+                restaurant.showDescription();
+            });
+            this.averageRestaurantRating.push(restaurant.averageStar);
+        }
+        this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
+        this.showBestRestaurant();
+    }
+
+    showBestRestaurant(){
+        let bestRestaurant = this.listRestaurant.find(elt => (elt.averageStar === this.highestRated));
+        bestRestaurant.showDescription();
+    }
+
+    selectionRestaurantByRating() {
+        $('#valForm').click(()=>{
+            let minStar = $('#form-min').val();
+            let maxStar = $('#form-max').val();
+            if( minStar > maxStar) {
+                alert('la note minimum attribuer et plus grande que la note maximum');
+            }
+            else {
+                this.listRestaurant.forEach(element => {
+                    if ((element.averageStar >= minStar) && (element.averageStar <= maxStar)) {
+                        this.newListRestaurant.push(element);
+                    }
+                });
+            }
+            this.deleteRestaurantList();
+            this.addRestaurantSelected();
+        });
+    }
+
+    deleteRestaurantList() {
+        for (let restaurant of this.listRestaurant){
+            $('#btn-'+restaurant.id+'').remove();
+        }
+    }
+
+    addRestaurantSelected() {
+        for (let restaurant of this.newListRestaurant){
+            restaurant.createTagList();
         }
     }
 }

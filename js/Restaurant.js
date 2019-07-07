@@ -17,7 +17,7 @@ class Restaurant {
 
     // création du <li> du restaurant 
     createTagList() {
-        let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-primary badge-pill">'+ this.averageStar +'</span></button>');
+        let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-light badge-pill">'+ this.averageStar +'</span></button>');
         $('#listGroup').append(buttonList);
     };
 
@@ -48,16 +48,14 @@ class Restaurant {
     }
 
     showDescription() {
-        $('#btn-'+this.id+'').on("click",()=> {
-            $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.lat+','+this.long+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
-            $('.card-body h5').text(this.name);
-            $('#starAverage').text('Note du restaurant : '+this.averageStar+'/5');
-            $('#address').text('Adresse: '+this.adress+'');
-            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
-            $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
-            this.colorAverageStar();
-            this.showAllComm();
-        });
+        $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+        $('.card-body h5').text(this.name);
+        $('#starAverage').text('Note du restaurant : '+this.averageStar+'/5');
+        $('#address').text('Adresse: '+this.adress+'');
+        $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+        $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
+        this.colorAverageStar();
+        this.showAllComm();
     }
 
     colorAverageStar() {
@@ -72,16 +70,10 @@ class Restaurant {
         }
     }
 
-        // je devrait plutôt créer la boite modal en js ou html ? 
     showAllComm(){
-        $('.modal').attr('id', ''+this.id+'-modal');
-        $('#btnCom').attr('data-target', '#'+this.id+'-modal');
         for (let i=0; i< this.comments.length; i++) {
-            let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[1]+'/5)');
+            let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[i]+'/5)');
             $('.modal-body').append($comment);
         }
-        $('#btnCom').click(()=>{
-            $('.modal').modal('show');
-        });
     }
 }

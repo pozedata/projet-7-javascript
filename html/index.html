@@ -26,21 +26,6 @@
         <div class="row" id="test">
             <div class="col-lg-3 col-12">
                 <div class="list-group overflow-auto" id="listGroup"></div>
-                <form class="form-row" id="formList">
-                    <label for="form-control">sélectionné les meilleures restaurants !</label>
-                    <div class="col-8">
-                        <select class="form-control">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <button class="btn btn-outline-primary" id="valForm" type="submit">valider</button>
-                    </div>
-                </form>
             </div>
             <div class="col-lg-6 col-12">
                 <div class ="map" id="mapGoogle"></div>
@@ -50,17 +35,17 @@
                     <div class="card overflow-auto">
                         <img class="card-img-top">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
+                            <h5 class="card-title"></h5>
                             <hr>
                             <p id="starAverage"></p>
                             <p id="address"></p>
                             <hr>
                             <h6><em>commentaires: </em></h6>
-                            <p class="card-text" id="com1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia dolorum laboriosam, officiis necessitatibus nulla architecto tempora nihil totam ullam recusandae ipsam quaerat rem dolorem consectetur ad mollitia numquam iste error.</p>
-                            <p class="card-text" id="com2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia dolorum laboriosam, officiis necessitatibus nulla architecto tempora nihil totam ullam recusandae ipsam quaerat rem dolorem consectetur ad mollitia numquam iste error.</p>
+                            <p class="card-text" id="com1"></p>
+                            <p class="card-text" id="com2"></p>
                         </div>
                         <div class="card-footer">
-                            <button data-toggle="modal" class="btn btn-outline-primary btn-block" id="btnCom">Afficher tous les commentaires</button>
+                            <button data-toggle="modal" data-target="#modalCard" class="btn btn-outline-light btn-block" id="btnCom">Afficher tous les commentaires</button>
                         </div>
                     </div>
                 </div>
@@ -69,12 +54,36 @@
     </section>
 
     <section class="container-fluid" id="restaurantForm">
-        <h1 class="titleContainer">Ajoutez votre restaurant !</h1>
-        <div class="row">
-            <div class="col-12">
-                <div class ="formForRetaurant"><p>formulaire pour l'ajout d'un restaurant</p></div>
+        <h1 id="title-form">sélectionné les meilleures restaurants !</h1>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="form-min">note minimum</label>
+                    <select class="form-control" id="form-min">
+                        <option selected>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-12">
+                    <label for="form-max">note maximum</label>
+                    <select class="form-control" id="form-max">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option selected>5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-12">
+                    <button class="btn btn-outline-light" id="valForm">valider</button>
+                </div>
+            </div>
     </section>
 
     <section class="container" id="top">
@@ -110,37 +119,22 @@
 
     <!-- ============================= Modal ====================================== -->
 
-    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="modalCard">
         <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Commentaires</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    <!-- <div class="modal fade" role="dialog">
-        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Plus d'informations</h4>
+                    <h5 class="modal-title">Commentaires</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-body">
-                    Le Tigre (Panthera tigris) est un mammifère carnivore de la famille des félidés...
-                </div>
+                <div class="modal-body"></div>
                 <div class="modal-footer">
-                    <em>Informations sous réserve</em>
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <footer class="container-fluid text-center">
         <div class="row">
