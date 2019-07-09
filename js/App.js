@@ -13,6 +13,7 @@ class App {
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
         
+        // $(window).on('deleteNewRestaurant', () => {this.deleteNewRestaurant()});
     }
 
     // methode qui créer les objet restaurant
@@ -72,15 +73,19 @@ class App {
 
     displayRestaurantElt(){
         for (let restaurant of this.listRestaurant) {
-            restaurant.createTagList();
-            restaurant.createMarker(this.map);
-            $('#btn-'+restaurant.id+'').on("click",()=> {
-                restaurant.showDescription();
-            });
-            this.averageRestaurantRating.push(restaurant.averageStar);
+            this.createDescription(restaurant);
         }
         this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
         this.showBestRestaurant();
+    }
+
+    createDescription(restaurant) {
+        restaurant.createTagList();
+        restaurant.createMarker(this.map);
+        $('#btn-'+restaurant.id+'').on("click",()=> {
+            restaurant.showDescription();
+        });
+        this.averageRestaurantRating.push(restaurant.averageStar);
     }
 
     showBestRestaurant(){
@@ -89,33 +94,33 @@ class App {
     }
 
     selectionRestaurantByRating() {
-        $('#valForm').click(()=>{
+        $('#valForm').on('click',()=>{
             let minStar = $('#form-min').val();
             let maxStar = $('#form-max').val();
             if( minStar > maxStar) {
                 alert('la note minimum attribuer et plus grande que la note maximum');
             }
             else {
-                this.listRestaurant.forEach(element => {
-                    if ((element.averageStar >= minStar) && (element.averageStar <= maxStar)) {
-                        this.newListRestaurant.push(element);
-                    }
+                this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+                    return (elt.averageStar >= minStar) && (elt.averageStar <= maxStar)
                 });
+                        console.log(this.newListRestaurant);
             }
-            this.deleteRestaurantList();
+            this.deleteRestaurant();
             this.addRestaurantSelected();
         });
     }
 
-    deleteRestaurantList() {
+    deleteRestaurant() {
         for (let restaurant of this.listRestaurant){
             $('#btn-'+restaurant.id+'').remove();
+            restaurant.marker.setMap(null);
         }
     }
 
     addRestaurantSelected() {
         for (let restaurant of this.newListRestaurant){
-            restaurant.createTagList();
+            this.createDescription(restaurant);
         }
     }
 }

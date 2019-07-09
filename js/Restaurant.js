@@ -71,9 +71,23 @@ class Restaurant {
     }
 
     showAllComm(){
+        // for (let i=0; i< this.comments.length; i++) {
+        //     let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[i]+'/5)');
+        //     $('.modal-body').append($comment);
+        //     console.log(this.comments);
+        // }
+
+        let $comment = []
         for (let i=0; i< this.comments.length; i++) {
-            let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[i]+'/5)');
-            $('.modal-body').append($comment);
+            let test = '<p>'+(i+1)+': '+this.comments[i]+'('+this.stars[i]+'/5)</p>';
+            $comment.push(test);
         }
+        console.log($comment);
+        $('.modal-body').html(()=>{
+            for (let i=0; i< $comment.length; i++) {
+                return ''+$comment[i]+'';
+            }
+        });
+        // $('.modal-body').html(''+$comment[0]+''+ $comment[1]+'');
     }
 }
