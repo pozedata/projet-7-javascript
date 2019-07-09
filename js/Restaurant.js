@@ -43,7 +43,14 @@ class Restaurant {
         let posMarker = {lat: this.lat, lng: this.long};
         this.marker = new google.maps.Marker({
             position: posMarker, 
-            map: map
+            map: map,
+            // label : this.name
+        });
+        this.marker.addListener('click', ()=> {
+            // this.showDescription();
+            $('#btn-'+this.id+'').trigger('click');
+            this.marker.label = this.name;
+            console.log(this.marker.label);
         });
     }
 
@@ -77,17 +84,32 @@ class Restaurant {
         //     console.log(this.comments);
         // }
 
-        let $comment = []
-        for (let i=0; i< this.comments.length; i++) {
-            let test = '<p>'+(i+1)+': '+this.comments[i]+'('+this.stars[i]+'/5)</p>';
-            $comment.push(test);
-        }
-        console.log($comment);
-        $('.modal-body').html(()=>{
-            for (let i=0; i< $comment.length; i++) {
-                return ''+$comment[i]+'';
-            }
-        });
-        // $('.modal-body').html(''+$comment[0]+''+ $comment[1]+'');
+        // let $comment = []
+        // for (let i=0; i< this.comments.length; i++) {
+        //     let test = '<p>'+(i+1)+': '+this.comments[i]+'('+this.stars[i]+'/5)</p>';
+        //     $comment.push(test);
+        // }
+        // console.log($comment);
+        // $('.modal-body').html(()=>{
+        //     for (let i=0; i< $comment.length; i++) {
+        //         return ''+$comment[i]+'';
+        //     }
+        // });
+        // // $('.modal-body').html(''+$comment[0]+''+ $comment[1]+'');
+
+        // $('#allCom').text(()=>{
+        //     for (let i=0; i<=this.comments.length; i++) {
+        //         return this.comments[i];
+        //     }
+        // })
+
+        // $('#modalCard').on('show.bs.modal', function (event) {
+        //     var button = $(event.relatedTarget) // Bouton qui a déclenché le modal
+        //     var recipient = button.data('whatever') // Extraire les informations des attributs data- *
+            
+        //     var modal = $(this)
+        //     modal.find('.modal-title').text('New message to ' + recipient)
+        //     modal.find('.modal-body input').val(recipient)
+        //   })
     }
 }
