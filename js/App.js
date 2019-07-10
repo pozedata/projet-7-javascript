@@ -12,8 +12,6 @@ class App {
         
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
-        
-        // $(window).on('deleteNewRestaurant', () => {this.deleteNewRestaurant()});
     }
 
     // methode qui créer les objet restaurant
@@ -26,7 +24,6 @@ class App {
             }
             this.displayRestaurantElt();
         });
-        // console.log(Math.max(...this.averageRestaurantRating));
     }
 
     initMap() {
@@ -90,7 +87,7 @@ class App {
 
     showBestRestaurant(){
         let bestRestaurant = this.listRestaurant.find(elt => (elt.averageStar === this.highestRated));
-        bestRestaurant.showDescription();
+        bestRestaurant.showDescription(); // ajouter le nombre de comm max 
     }
 
     selectionRestaurantByRating() {

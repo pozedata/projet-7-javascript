@@ -45,12 +45,13 @@ class Restaurant {
             position: posMarker, 
             map: map,
             // label : this.name
+            // point of interest a virer 
         });
         this.marker.addListener('click', ()=> {
             // this.showDescription();
-            $('#btn-'+this.id+'').trigger('click');
-            this.marker.label = this.name;
-            console.log(this.marker.label);
+            $('#btn-'+this.id+'').focus();
+            // this.marker.label = this.name;
+            // console.log(this.marker.label);
         });
     }
 
@@ -78,11 +79,12 @@ class Restaurant {
     }
 
     showAllComm(){
-        // for (let i=0; i< this.comments.length; i++) {
-        //     let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[i]+'/5)');
-        //     $('.modal-body').append($comment);
-        //     console.log(this.comments);
-        // }
+        $('.modal-body').html('');
+        for (let i=0; i< this.comments.length; i++) {
+            let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[i]+'/5)');
+            $('.modal-body').append($comment);
+            console.log(this.comments);
+        }
 
         // let $comment = []
         // for (let i=0; i< this.comments.length; i++) {
