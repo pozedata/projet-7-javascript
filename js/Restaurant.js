@@ -15,7 +15,7 @@ class Restaurant {
         this.createAverageStars();
     };
 
-    // création du <li> du restaurant 
+    // création du bouton du restaurant 
     createTagList() {
         let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-light badge-pill">'+ this.averageStar +'</span></button>');
         $('#listGroup').append(buttonList);
@@ -43,17 +43,31 @@ class Restaurant {
         let posMarker = {lat: this.lat, lng: this.long};
         this.marker = new google.maps.Marker({
             position: posMarker, 
-            map: map,
-            // label : this.name
-            // point of interest a virer 
+            map: map
+        });
+        let contentInfoWindow = '<h5 class="infoWindow">'+this.name+'</h5>'+
+        '<p class="infoWindow">'+this.adress+'</p>'+
+        '<p class="infoWindow">Note: '+this.averageStar+'/5</p>';
+
+        let infowindow = new google.maps.InfoWindow({
+            content: contentInfoWindow
         });
         this.marker.addListener('click', ()=> {
-            // this.showDescription();
+            this.showDescription();
             $('#btn-'+this.id+'').focus();
-            // this.marker.label = this.name;
-            // console.log(this.marker.label);
+            // if (map.requestFullscreen) {
+                $('.gm-control-active gm-fullscreen-control').on('click', 'salut');
+                infowindow.open(map, this.marker);
+            // }
+            
+            // que en full screen 
         });
+        $('.gm-fullscreen-control').click(function() {
+            console.log('salut la page')
+          });
     }
+
+    createInfoWindows
 
     showDescription() {
         $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
@@ -79,39 +93,13 @@ class Restaurant {
     }
 
     showAllComm(){
-        $('.modal-body').html('');
+        $('#modal-body-com').html('');
         for (let i=0; i< this.comments.length; i++) {
             let $comment = $('<p>').text(''+(i+1)+': '+this.comments[i]+' ('+this.stars[i]+'/5)');
-            $('.modal-body').append($comment);
-            console.log(this.comments);
+            $('#modal-body-com').append($comment);
         }
-
-        // let $comment = []
-        // for (let i=0; i< this.comments.length; i++) {
-        //     let test = '<p>'+(i+1)+': '+this.comments[i]+'('+this.stars[i]+'/5)</p>';
-        //     $comment.push(test);
-        // }
-        // console.log($comment);
-        // $('.modal-body').html(()=>{
-        //     for (let i=0; i< $comment.length; i++) {
-        //         return ''+$comment[i]+'';
-        //     }
-        // });
-        // // $('.modal-body').html(''+$comment[0]+''+ $comment[1]+'');
-
-        // $('#allCom').text(()=>{
-        //     for (let i=0; i<=this.comments.length; i++) {
-        //         return this.comments[i];
-        //     }
-        // })
-
-        // $('#modalCard').on('show.bs.modal', function (event) {
-        //     var button = $(event.relatedTarget) // Bouton qui a déclenché le modal
-        //     var recipient = button.data('whatever') // Extraire les informations des attributs data- *
-            
-        //     var modal = $(this)
-        //     modal.find('.modal-title').text('New message to ' + recipient)
-        //     modal.find('.modal-body input').val(recipient)
-        //   })
     }
 }
+
+// creer un fichier avec une varible global qui contient ma clef pour l'utiliser 
+// et .gitignore

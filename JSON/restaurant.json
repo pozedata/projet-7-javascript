@@ -1,21 +1,5 @@
 [
     {
-        "restaurantName":"aa",
-        "address":"91 Rue Antoine de Très, 84240 La Tour-d'Aigues",
-        "lat":43.725155,
-        "long":5.547930,
-        "ratings":[
-            {
-                "stars":5,
-                "comment":"C'est vraiment bon ! Cosy, chaleureux...juste les tables sont collées donc pas très intime. Je recommande"
-            },
-            {
-                "stars":5,
-                "comment":"Bonne ambiance. Les produits sont frais et les plats succulents. Jamais déçu. Je recommande vivement."
-            }
-        ]
-    },
-    {
         "restaurantName":"Bronco",
         "address":"39 Rue des Petites Écuries, 75010 Paris",
         "lat":48.8737815,

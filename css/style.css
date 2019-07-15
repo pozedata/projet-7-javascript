@@ -92,8 +92,9 @@ path {
     height: 80vh;
 }
 
-map div {
-    color: #1a1a1a;
+.infoWindow {
+    color: #2c2c2c;
+    text-align: center;
 }
 
 .description {
