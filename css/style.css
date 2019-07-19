@@ -121,6 +121,15 @@ form button {
     background-color: #2c2c2c;
 }
 
+#btnFormAddrestaurant {
+    margin-top: 3%;
+}
+
+#btnFormAddComment {
+    margin-top: 3%;
+}
+
+
 /* ================= formaulaire restaurant ================ */
 #restaurantForm {
     margin-top: 5%;

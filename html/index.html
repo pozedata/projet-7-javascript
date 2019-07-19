@@ -43,6 +43,7 @@
                             <h6><em>commentaires: </em></h6>
                             <p class="card-text" id="com1"></p>
                             <p class="card-text" id="com2"></p>
+                            <button data-toggle="modal" data-target="#modalAddComment" class="btn btn-light btn-block" id="btnAddCom">Ajouter un commentaire</button>
                         </div>
                         <div class="card-footer">
                             <button data-toggle="modal" data-target="#modalCard" class="btn btn-outline-light btn-block" id="btnCom">Afficher tous les commentaires</button>
@@ -146,32 +147,68 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Ajoutez votre restaurant</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true" class="closeModalAddRestaurant">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" id="modal-body-form">
-                    <form>
+                    <form method="dialog">
                         <div class="col-12">
                             <label for="form-name">Nom du restaurant</label>
                             <input type="text" class="form-control" id="form-name" placeholder="ex: l'Ange Gourmant" required>
                         </div>
                         <div class="col-12">
-                            <label for="form-adress">Adresse du restaurant</label>
-                            <input type="text" class="form-control" id="form-adress" required>
+                            <label for="form-address">Adresse du restaurant</label>
+                            <input type="text" class="form-control" id="form-address" required>
                         </div>
                         <div class="col-12">
                             <label for="form-star">Note du restaurant (entre 0 et 5)</label>
-                            <input type="number" min="0" max="5" class="form-control" id="form-star" placeholder="ex: 4" required>
+                            <input type="number" min="0" max="5" step="any" class="form-control" id="form-star" placeholder="ex: 4" required>
                         </div>
                         <div class="col-12">
-                            <label for="form-adress">commentaires</label>
-                            <textarea class="form-control" id="form-adress" placeholder="ex: Super restaurant, je recommande vivement" required></textarea>
+                            <label for="form-comment">commentaires</label>
+                            <textarea class="form-control" id="form-comment" placeholder="ex: Super restaurant, je recommande vivement" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-light" type="submit" id="btnFormAddrestaurant">valider</button>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                        <button type="button" class="btn btn-light">valider</button>
-                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-light" type="submit" id="btnFormAddrestaurant">valider</button> -->
+                    <button type="button" class="btn btn-outline-light closeModalAddRestaurant" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================= Modal add comment ====================================== -->
+
+    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="modalAddComment">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajoutez votre commentaire</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="closeModalAddCom">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body-form">
+                    <form method="dialog">
+                        <div class="col-12">
+                            <label for="form-comment">Votre commentaires</label>
+                            <textarea class="form-control" id="form-AddComment" placeholder="ex: Super restaurant, je recommande vivement" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="form-star">Note du restaurant (entre 0 et 5)</label>
+                            <input type="number" min="0" max="5" step="any" class="form-control" id="form-AddStar" placeholder="ex: 4" required>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-light" type="submit" id="btnFormAddComment">valider</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light closeModalAddCom" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -204,7 +241,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088" async defer></script>
 
-    <!-- <script src="../js/Map.js"></script> -->
+    <script src="../JSON/map.js"></script>
     <script src="../js/Restaurant.js"></script>
     <script src="../js/App.js"></script>
     <script src="../js/Init.js"></script>

@@ -1,4 +1,4 @@
-[
+ const StyleMap = [
     {
       "elementType": "geometry",
       "stylers": [
