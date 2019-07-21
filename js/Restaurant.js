@@ -10,6 +10,7 @@ class Restaurant {
         this.stars = [];
         this.averageStar;
         this.marker;
+        this.infowindow;
 
         this.splitRatings();
         this.createAverageStars();
@@ -17,7 +18,7 @@ class Restaurant {
 
     // création du bouton du restaurant 
     createTagList() {
-        let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-light badge-pill" id="'+this.id+'badgeAverageStar">'+ this.averageStar +'</span></button>');
+        let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-light badge-pill" id="'+this.id+'badgeAverageStar">'+ this.fixedNumber(this.averageStar) +'</span></button>');
         $('#listGroup').append(buttonList);
     };
 
@@ -38,6 +39,15 @@ class Restaurant {
         this.averageStar = addition/this.stars.length;
     };
 
+    fixedNumber(x){
+        if (Number.isInteger(x)){
+            return Number.parseFloat(x).toFixed(0);
+        }
+        else {
+            return Number.parseFloat(x).toFixed(1);
+        }
+    }
+
     // création du marqueur sur la map
     createMarker(map) {
         let posMarker = {lat: this.lat, lng: this.long};
@@ -45,32 +55,48 @@ class Restaurant {
             position: posMarker, 
             map: map
         });
-        let contentInfoWindow = '<h5 class="infoWindow">'+this.name+'</h5>'+
-        '<p class="infoWindow">'+this.adress+'</p>'+
-        '<p class="infoWindow">Note: '+this.averageStar+'/5</p>';
 
-        let infowindow = new google.maps.InfoWindow({
-            content: contentInfoWindow
+        this.infowindow = new google.maps.InfoWindow({
+            content: this.contentInfoWindow()
         });
         this.marker.addListener('click', ()=> {
+            let sizeMap = Math.round($(map.getDiv()).children().eq(0).width());
+            let sizeScreen = Math.round(window.innerWidth);
             this.showDescription();
             $('#btn-'+this.id+'').focus();
-
-                infowindow.open(map, this.marker);
+            if (sizeMap === sizeScreen) {
+                this.infowindow.open(map, this.marker);
+            } 
         });
+    }
+
+    test(){
+        console.log(window.innerWidth);
+        console.log($('#mapGoogle').width());
+    }
+
+    contentInfoWindow() {
+        return '<h5 class="infoWindow">'+this.name+'</h5>'+
+        '<p class="infoWindow">'+this.adress+'</p>'+
+        '<p class="infoWindow">Note: '+this.fixedNumber(this.averageStar)+'/5</p>';
     }
 
     showDescription() {
         $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
         $('.card-body h5').text(this.name);
-        $('#starAverage').text('Note du restaurant : '+this.averageStar+'/5');
+        $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#address').text('Adresse: '+this.adress+'');
-        $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
-        $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
+        if (this.comments.length < 2) {
+            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+            $('#com2').text('');
+        }
+        else {
+            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+            $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
+        }
         this.colorAverageStar();
         this.addCommentForRestaurant();
         this.showAllComm();
-        // pk je ne peut pas apeller la methode closeModalAddCom ?
         $('.closeModalAddCom').click(()=>{
             $('#form-AddComment').val("");
             $('#form-AddStar').val("");
@@ -107,10 +133,15 @@ class Restaurant {
                 this.stars.push(star);
                 this.showAllComm();
                 this.createAverageStars();
-                $('#'+this.id+'badgeAverageStar').text(this.averageStar.toFixed(1)); // pareil manuellement
+                $('#'+this.id+'badgeAverageStar').text(this.fixedNumber(this.averageStar));
                 this.closeModalAddCom();
+                $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
+                this.infowindow.setContent(this.contentInfoWindow());
+                if (this.comments.length < 2) {
+                    $('#com2').text($('#form-AddComment').val());
+                    console.log('lu')
+                }
             }
-            //il faut aussi changer tous les autres notre (description(sa fait deja mais que quand on change de restaurant), infosWindow(se fait pas du tout))
         });
     }
 

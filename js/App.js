@@ -10,10 +10,10 @@ class App {
         this.highestRated; // comment faire si j'ai plusieurs restaurant avec la meilleure note posible ? 
         this.newListRestaurant = this.listRestaurant;
         this.eltMap;
+        this.LatLng;
 
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
-        this.test();
     }
 
     // methode qui créer les objet restaurant
@@ -54,12 +54,16 @@ class App {
         $('#valForm').on('click',()=>{
             let minStar = $('#form-min').val();
             let maxStar = $('#form-max').val();
+            let south_Lat = this.LatLng.getSouthWest().lat();
+            let south_Lng = this.LatLng.getSouthWest().lng();
+            let north_Lat = this.LatLng.getNorthEast().lat();
+            let north_Lng = this.LatLng.getNorthEast().lng();
             if( minStar > maxStar) {
                 alert('la note minimum attribuer et plus grande que la note maximum');
             }
             else {
                 this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                    return (elt.averageStar >= minStar) && (elt.averageStar <= maxStar)
+                    return ((elt.averageStar >= minStar) && (elt.averageStar <= maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
                 });
             }
             this.deleteRestaurant();
@@ -94,7 +98,7 @@ class App {
         });
 
         this.clickMapForAddRestaurant();
-        // this.eventGetLatLng();
+        this.eventGetLatLng();
         this.getLatLng();
 
         this.map.mapTypes.set('styled_map', styledMapType);
@@ -184,7 +188,6 @@ class App {
         })
     }
 
-
     closeModalAddRestaurant() {
             $('#form-name').val("");
             $('#form-star').val("");
@@ -194,18 +197,18 @@ class App {
 
     getLatLng(){
         this.map.addListener('bounds_changed', ()=> {
-            let LatLng = this.map.getBounds();
-            let south_Lat = LatLng.getSouthWest().lat();
-            let south_Lng = LatLng.getSouthWest().lng();
-            let north_Lat = LatLng.getNorthEast().lat();
-            let north_Lng = LatLng.getNorthEast().lng();
-            for (let restaurant of this.newListRestaurant){
-                if (((restaurant.lat <= north_Lat)&&(restaurant.lat >= south_Lat)) && ((restaurant.long <= north_Lng)&&(restaurant.long >= south_Lng))) {
-                    console.log(restaurant.name);
-                    
-                }
-            }
-            console.log(south_Lat,south_Lng,north_Lat,north_Lng);
+            this.LatLng = this.map.getBounds();
+            let south_Lat = this.LatLng.getSouthWest().lat();
+            let south_Lng = this.LatLng.getSouthWest().lng();
+            let north_Lat = this.LatLng.getNorthEast().lat();
+            let north_Lng = this.LatLng.getNorthEast().lng();
+
+            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+            });
+            this.deleteRestaurant();
+            this.addRestaurantSelected();
+
             google.maps.event.clearListeners(this.map, 'bounds_changed');
          });
     }
@@ -213,19 +216,20 @@ class App {
 
     eventGetLatLng() {
         this.map.addListener('dragend', ()=> {
-            /* On récupère les coordonnées des coins de la map */ 
-            let LatLng = this.map.getBounds();
-            let South_Lat = LatLng.getSouthWest().lat();
-            let South_Lng = LatLng.getSouthWest().lng();
-            let North_Lat = LatLng.getNorthEast().lat();
-            let North_Lng = LatLng.getNorthEast().lng();
-            console.log(South_Lat,South_Lng,North_Lat,North_Lng);
-           });
-    }
-
-    test(){
-        console.log(window.innerWidth);
-        console.log($('#mapGoogle').width());
+            this.LatLng = this.map.getBounds();
+            let south_Lat = this.LatLng.getSouthWest().lat();
+            let south_Lng = this.LatLng.getSouthWest().lng();
+            let north_Lat = this.LatLng.getNorthEast().lat();
+            let north_Lng = this.LatLng.getNorthEast().lng();
+            console.log(south_Lat,south_Lng,north_Lat,north_Lng);
+            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+                console.log(((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)));
+                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+            });
+            this.deleteRestaurant();
+            this.addRestaurantSelected();
+            console.log('salut');
+        });
     }
 }
 
