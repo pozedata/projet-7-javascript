@@ -37,6 +37,7 @@ class Restaurant {
             addition += this.stars[i];
         }
         this.averageStar = addition/this.stars.length;
+        console.log(this.stars)
     };
 
     fixedNumber(x){
@@ -82,8 +83,7 @@ class Restaurant {
     }
 
     showDescription() {
-
-        // $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+        $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#address').text('Adresse: '+this.adress+'');
@@ -99,8 +99,7 @@ class Restaurant {
         this.addCommentForRestaurant();
         this.showAllComm();
         $('.closeModalAddCom').click(()=>{
-            $('#form-AddComment').val("");
-            $('#form-AddStar').val("");
+            this.closeModalAddCom();
         });
     }
 
@@ -125,6 +124,7 @@ class Restaurant {
     }
 
     addCommentForRestaurant() {
+        $('#btnFormAddComment').off('click');
         $('#btnFormAddComment').click(()=>{ 
             if (($('#form-AddComment').val() !== "") && ($('#form-AddStar').val() !== "") && ($('#form-AddStar').val() >= 0) && ($('#form-AddStar').val() <= 5)) {
                 this.averageStar = 0;
@@ -135,6 +135,7 @@ class Restaurant {
                 this.showAllComm();
                 this.createAverageStars();
                 $('#'+this.id+'badgeAverageStar').text(this.fixedNumber(this.averageStar));
+                console.log(this);
                 this.closeModalAddCom();
                 $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
                 this.infowindow.setContent(this.contentInfoWindow());
@@ -149,7 +150,6 @@ class Restaurant {
             $('#form-AddComment').val("");
             $('#form-AddStar').val("");
             $('#modalAddComment').modal('hide');
-            // $('#btnFormAddComment').off('click');
     }
 }
 

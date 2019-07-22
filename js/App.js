@@ -11,6 +11,8 @@ class App {
         this.newListRestaurant = this.listRestaurant;
         this.eltMap;
         this.LatLng;
+        this.minStar;
+        this.maxStar;
 
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
@@ -52,18 +54,18 @@ class App {
 
     selectionRestaurantByRating() {
         $('#valForm').on('click',()=>{
-            let minStar = $('#form-min').val();
-            let maxStar = $('#form-max').val();
+            this.minStar = $('#form-min').val();
+            this.maxStar = $('#form-max').val();
             let south_Lat = this.LatLng.getSouthWest().lat();
             let south_Lng = this.LatLng.getSouthWest().lng();
             let north_Lat = this.LatLng.getNorthEast().lat();
             let north_Lng = this.LatLng.getNorthEast().lng();
-            if( minStar > maxStar) {
+            if( this.minStar > this.maxStar) {
                 alert('la note minimum attribuer et plus grande que la note maximum');
             }
             else {
                 this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                    return ((elt.averageStar >= minStar) && (elt.averageStar <= maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
                 });
             }
             this.deleteRestaurant();
@@ -100,6 +102,7 @@ class App {
         this.clickMapForAddRestaurant();
         this.eventGetLatLng();
         this.getLatLng();
+        this.eventZoomChanged();
 
         this.map.mapTypes.set('styled_map', styledMapType);
         this.map.setMapTypeId('styled_map'); 
@@ -175,7 +178,7 @@ class App {
                 let name = $('#form-name').val();
                 let address = $('#form-address').val();
                 let ratings = [{
-                    stars: $('#form-star').val(),
+                    stars: parseFloat($('#form-star').val()),
                     comment: $('#form-comment').val()
                 }];
                 let id = this.listRestaurant.length
@@ -204,7 +207,12 @@ class App {
             let north_Lng = this.LatLng.getNorthEast().lng();
 
             this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+                if (this.minStar !== undefined && this.maxStar !== undefined) {
+                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+                }
+                else {
+                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+                }
             });
             this.deleteRestaurant();
             this.addRestaurantSelected();
@@ -221,14 +229,36 @@ class App {
             let south_Lng = this.LatLng.getSouthWest().lng();
             let north_Lat = this.LatLng.getNorthEast().lat();
             let north_Lng = this.LatLng.getNorthEast().lng();
-            console.log(south_Lat,south_Lng,north_Lat,north_Lng);
             this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                console.log(((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)));
-                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+                if (this.minStar !== undefined && this.maxStar !== undefined) {
+                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+                }
+                else {
+                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+                }
             });
             this.deleteRestaurant();
             this.addRestaurantSelected();
-            console.log('salut');
+        });
+    }
+
+    eventZoomChanged() {
+        this.map.addListener('zoom_changed', ()=> {
+            this.LatLng = this.map.getBounds();
+            let south_Lat = this.LatLng.getSouthWest().lat();
+            let south_Lng = this.LatLng.getSouthWest().lng();
+            let north_Lat = this.LatLng.getNorthEast().lat();
+            let north_Lng = this.LatLng.getNorthEast().lng();
+            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+                if (this.minStar !== undefined && this.maxStar !== undefined) {
+                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+                }
+                else {
+                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+                }
+            });
+            this.deleteRestaurant();
+            this.addRestaurantSelected();
         });
     }
 }

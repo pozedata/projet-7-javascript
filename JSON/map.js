@@ -284,7 +284,7 @@
       "elementType": "geometry",
       "stylers": [
         {
-          "color": "#c9c9c9"
+          "color": "#2c2c2c"
         }
       ]
     },
@@ -293,7 +293,7 @@
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#9e9e9e"
+          "color": "#000000"
         }
       ]
     }
