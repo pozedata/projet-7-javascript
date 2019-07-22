@@ -172,7 +172,6 @@ class App {
     addNewRestaurant(latClick, lngClick) {
         $('#btnFormAddrestaurant').click(()=>{
             if (($('#form-name').val() !== "") && ($('#form-address').val() !== "") && ($('#form-star').val() >= 0) && ($('#form-star').val() <= 5) && ($('#form-comment').val() !== "")) {
-                console.log('salut');
                 let name = $('#form-name').val();
                 let address = $('#form-address').val();
                 let ratings = [{
@@ -184,6 +183,7 @@ class App {
                 this.listRestaurant.push(restaurant);
                 this.createDescription(restaurant);
                 this.closeModalAddRestaurant();
+                $('#btnFormAddrestaurant').off('click');
             }
         })
     }

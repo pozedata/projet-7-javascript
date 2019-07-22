@@ -82,7 +82,8 @@ class Restaurant {
     }
 
     showDescription() {
-        $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+
+        // $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#address').text('Adresse: '+this.adress+'');
@@ -139,7 +140,6 @@ class Restaurant {
                 this.infowindow.setContent(this.contentInfoWindow());
                 if (this.comments.length < 2) {
                     $('#com2').text($('#form-AddComment').val());
-                    console.log('lu')
                 }
             }
         });
@@ -149,6 +149,7 @@ class Restaurant {
             $('#form-AddComment').val("");
             $('#form-AddStar').val("");
             $('#modalAddComment').modal('hide');
+            // $('#btnFormAddComment').off('click');
     }
 }
 
