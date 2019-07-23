@@ -11,6 +11,7 @@ class Restaurant {
         this.averageStar;
         this.marker;
         this.infowindow;
+        this.panorama;
 
         this.splitRatings();
         this.createAverageStars();
@@ -22,7 +23,7 @@ class Restaurant {
         $('#listGroup').append(buttonList);
     };
 
-    // récup des notes et commentaires du restaurant
+    // récupération des notes et commentaires du restaurant
     splitRatings(){
         for (let elt of this.ratings) {
             this.stars.push(elt.stars);
@@ -30,16 +31,16 @@ class Restaurant {
         }
     };
 
-    // création dela moyenne des notes du restaurant 
+    // création de la moyenne des notes du restaurant 
     createAverageStars(){
         let addition = 0;
         for (let i=0; i<=this.stars.length-1; i++) {
             addition += this.stars[i];
         }
         this.averageStar = addition/this.stars.length;
-        console.log(this.stars)
     };
 
+    // méthode pour gérer la note 
     fixedNumber(x){
         if (Number.isInteger(x)){
             return Number.parseFloat(x).toFixed(0);
@@ -71,30 +72,22 @@ class Restaurant {
         });
     }
 
-    test(){
-        console.log(window.innerWidth);
-        console.log($('#mapGoogle').width());
-    }
-
+    // contenue de l'info bulle marqueur  
     contentInfoWindow() {
         return '<h5 class="infoWindow">'+this.name+'</h5>'+
-        '<p class="infoWindow">'+this.adress+'</p>'+
-        '<p class="infoWindow">Note: '+this.fixedNumber(this.averageStar)+'/5</p>';
+            '<p class="infoWindow">'+this.adress+'</p>'+
+            '<p class="infoWindow">Note: '+this.fixedNumber(this.averageStar)+'/5</p>';
     }
 
+    // =========== Affichage de la decription du restaurant =========== //
+
+    // création des élément description
     showDescription() {
-        $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+        this.imgStreetView();        
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#address').text('Adresse: '+this.adress+'');
-        if (this.comments.length < 2) {
-            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
-            $('#com2').text('');
-        }
-        else {
-            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
-            $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
-        }
+        this.addComentCard();
         this.colorAverageStar();
         this.addCommentForRestaurant();
         this.showAllComm();
@@ -103,6 +96,21 @@ class Restaurant {
         });
     }
 
+    // création des images description
+    imgStreetView() {
+        let irl = 'https://maps.googleapis.com/maps/api/streetview/metadata?key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088&location='+this.name+''+this.adress+'';
+        $.getJSON(irl, (elt)=> {
+            console.log(elt);
+            if(elt.status === "OK") {
+                $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
+            }
+            else {
+                $('.card-img-top').attr('src', '../img/salle-restaurant.jpg');
+            }
+        });
+    }
+
+    // coloration de la note sur la description
     colorAverageStar() {
         if (this.averageStar >= 4) {
             $('#starAverage').css('color', 'lightgreen');
@@ -115,6 +123,21 @@ class Restaurant {
         }
     }
 
+    // ajout des commentaires du restaurant sur la description 
+    addComentCard(){
+        if (this.comments.length < 2) {
+            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+            $('#com2').text('');
+        }
+        else {
+            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+            $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
+        }
+    }
+
+    // =========== boite modal tous les commentaires =========== //
+
+    // création du contenue de la boite modal tous les commentaires 
     showAllComm(){
         $('#modal-body-com').html('');
         for (let i=0; i< this.comments.length; i++) {
@@ -123,6 +146,7 @@ class Restaurant {
         }
     }
 
+    // event valider formaulaire
     addCommentForRestaurant() {
         $('#btnFormAddComment').off('click');
         $('#btnFormAddComment').click(()=>{ 
@@ -138,14 +162,14 @@ class Restaurant {
                 console.log(this);
                 this.closeModalAddCom();
                 $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
+                this.colorAverageStar();
+                this.addComentCard();
                 this.infowindow.setContent(this.contentInfoWindow());
-                if (this.comments.length < 2) {
-                    $('#com2').text($('#form-AddComment').val());
-                }
             }
         });
     }
 
+    // fermeture de la boite modal
     closeModalAddCom() {
             $('#form-AddComment').val("");
             $('#form-AddStar').val("");
