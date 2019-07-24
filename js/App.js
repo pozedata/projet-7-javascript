@@ -7,7 +7,7 @@ class App {
         this.infoWindow;
         this.markerUser;
         this.averageRestaurantRating = [];
-        this.highestRated; // comment faire si j'ai plusieurs restaurant avec la meilleure note posible ? 
+        this.highestRated; 
         this.newListRestaurant = this.listRestaurant;
         this.eltMap;
         this.LatLng;
@@ -16,6 +16,8 @@ class App {
 
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
+        // merde pas vrai fin de l'etape 1 et 2 
+        // il faut changer l'affichage du meilleure restaurant au chargemen de la page en y ajoutant les bord de la map
     }
 
     // methode qui créer les objet restaurant
@@ -34,8 +36,6 @@ class App {
         for (let restaurant of this.listRestaurant) {
             this.createDescription(restaurant);
         }
-        this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
-        this.showBestRestaurant();
     }
 
     createDescription(restaurant) {
@@ -44,12 +44,6 @@ class App {
         $('#btn-'+restaurant.id+'').on("click",()=> {
             restaurant.showDescription();
         });
-        this.averageRestaurantRating.push(restaurant.averageStar);
-    }
-
-    showBestRestaurant(){
-        let bestRestaurant = this.listRestaurant.find(elt => (elt.averageStar === this.highestRated));
-        bestRestaurant.showDescription(); // ajouter le nombre de comm max 
     }
 
     selectionRestaurantByRating() {
@@ -216,6 +210,16 @@ class App {
             });
             this.deleteRestaurant();
             this.addRestaurantSelected();
+
+            for (let restaurant of this.newListRestaurant) {
+                this.averageRestaurantRating.push(restaurant.averageStar);
+            }
+
+            this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
+
+            let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
+            bestRestaurant.showDescription(); // ajouter le nombre de comm max 
+            console.log(this.highestRated);
 
             google.maps.event.clearListeners(this.map, 'bounds_changed');
          });
