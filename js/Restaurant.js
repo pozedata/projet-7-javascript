@@ -100,7 +100,6 @@ class Restaurant {
     imgStreetView() {
         let irl = 'https://maps.googleapis.com/maps/api/streetview/metadata?key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088&location='+this.name+''+this.adress+'';
         $.getJSON(irl, (elt)=> {
-            console.log(elt);
             if(elt.status === "OK") {
                 $('.card-img-top').attr('src', 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+this.name+''+this.adress+'&heading=151.78&pitch=-0.76&key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088');
             }

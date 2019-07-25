@@ -82,7 +82,7 @@ class App {
 
     initMap() {
         // arrive pas en utilisant le fichier json 
-        var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Styled Map'});
+        var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
 
         this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
             center: {lat: 48.888568, lng: 2.348442},
@@ -192,55 +192,46 @@ class App {
             $('#modalAddRestaurant').modal('hide');
     }
 
+    selectRestaurantByBounds () {
+        this.LatLng = this.map.getBounds();
+        let south_Lat = this.LatLng.getSouthWest().lat();
+        let south_Lng = this.LatLng.getSouthWest().lng();
+        let north_Lat = this.LatLng.getNorthEast().lat();
+        let north_Lng = this.LatLng.getNorthEast().lng();
+        this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+            if (this.minStar !== undefined && this.maxStar !== undefined) {
+                return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+            }
+            else {
+                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+            }
+        });
+    }
+
     getLatLng(){
         this.map.addListener('bounds_changed', ()=> {
-            this.LatLng = this.map.getBounds();
-            let south_Lat = this.LatLng.getSouthWest().lat();
-            let south_Lng = this.LatLng.getSouthWest().lng();
-            let north_Lat = this.LatLng.getNorthEast().lat();
-            let north_Lng = this.LatLng.getNorthEast().lng();
-
-            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                if (this.minStar !== undefined && this.maxStar !== undefined) {
-                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-                }
-                else {
-                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-                }
-            });
+            this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
-
-            for (let restaurant of this.newListRestaurant) {
-                this.averageRestaurantRating.push(restaurant.averageStar);
-            }
-
-            this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
-
-            let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
-            bestRestaurant.showDescription(); // ajouter le nombre de comm max 
-            console.log(this.highestRated);
+            this.showBestRestaurant();
 
             google.maps.event.clearListeners(this.map, 'bounds_changed');
          });
     }
 
+    showBestRestaurant() {
+        for (let restaurant of this.newListRestaurant) {
+            this.averageRestaurantRating.push(restaurant.averageStar);
+        }
+        this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
+        let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
+        bestRestaurant.showDescription();
+    }
+
 
     eventGetLatLng() {
         this.map.addListener('dragend', ()=> {
-            this.LatLng = this.map.getBounds();
-            let south_Lat = this.LatLng.getSouthWest().lat();
-            let south_Lng = this.LatLng.getSouthWest().lng();
-            let north_Lat = this.LatLng.getNorthEast().lat();
-            let north_Lng = this.LatLng.getNorthEast().lng();
-            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                if (this.minStar !== undefined && this.maxStar !== undefined) {
-                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-                }
-                else {
-                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-                }
-            });
+            this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
         });
@@ -248,22 +239,25 @@ class App {
 
     eventZoomChanged() {
         this.map.addListener('zoom_changed', ()=> {
-            this.LatLng = this.map.getBounds();
-            let south_Lat = this.LatLng.getSouthWest().lat();
-            let south_Lng = this.LatLng.getSouthWest().lng();
-            let north_Lat = this.LatLng.getNorthEast().lat();
-            let north_Lng = this.LatLng.getNorthEast().lng();
-            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                if (this.minStar !== undefined && this.maxStar !== undefined) {
-                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-                }
-                else {
-                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-                }
-            });
+            this.controlZoomForAddRestaurant();
+            this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
         });
+    }
+
+    controlZoomForAddRestaurant() {
+        google.maps.event.clearListeners(this.map, 'click');
+        if (this.map.getZoom() <= 14) {
+            this.map.addListener('click',()=>{
+                alert('Vous êtes a: Zoom'+this.map.getZoom()+' vous devait êtres a 15 minimum');
+            });
+            
+        }
+        else {
+            this.clickMapForAddRestaurant();
+            console.log('possible');
+        }
     }
 }
 
