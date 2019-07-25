@@ -16,8 +16,6 @@ class App {
 
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
-        // merde pas vrai fin de l'etape 1 et 2 
-        // il faut changer l'affichage du meilleure restaurant au chargemen de la page en y ajoutant les bord de la map
     }
 
     // methode qui créer les objet restaurant
@@ -64,6 +62,7 @@ class App {
             }
             this.deleteRestaurant();
             this.addRestaurantSelected();
+            this.showBestRestaurant();
         });
     }
 
@@ -81,7 +80,6 @@ class App {
     }
 
     initMap() {
-        // arrive pas en utilisant le fichier json 
         var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
 
         this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
@@ -221,11 +219,20 @@ class App {
 
     showBestRestaurant() {
         for (let restaurant of this.newListRestaurant) {
+            this.averageRestaurantRating = [];
             this.averageRestaurantRating.push(restaurant.averageStar);
         }
         this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
         let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
-        bestRestaurant.showDescription();
+        console.log(bestRestaurant)
+        if (bestRestaurant === undefined) {
+            console.log('pas de restaurant a proximiter compris dans vos critères');
+            $('.description').hide();
+        }
+        else {
+            bestRestaurant.showDescription();
+        }
+        
     }
 
 
@@ -252,7 +259,6 @@ class App {
             this.map.addListener('click',()=>{
                 alert('Vous êtes a: Zoom'+this.map.getZoom()+' vous devait êtres a 15 minimum');
             });
-            
         }
         else {
             this.clickMapForAddRestaurant();
