@@ -82,7 +82,7 @@ class App {
 
     initMap() {
         // arrive pas en utilisant le fichier json 
-        var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Styled Map'});
+        var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
 
         this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
             center: {lat: 48.888568, lng: 2.348442},
@@ -210,19 +210,19 @@ class App {
             });
             this.deleteRestaurant();
             this.addRestaurantSelected();
-
-            for (let restaurant of this.newListRestaurant) {
-                this.averageRestaurantRating.push(restaurant.averageStar);
-            }
-
-            this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
-
-            let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
-            bestRestaurant.showDescription(); // ajouter le nombre de comm max 
-            console.log(this.highestRated);
+            this.showBestRestaurant();
 
             google.maps.event.clearListeners(this.map, 'bounds_changed');
          });
+    }
+
+    showBestRestaurant() {
+        for (let restaurant of this.newListRestaurant) {
+            this.averageRestaurantRating.push(restaurant.averageStar);
+        }
+        this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
+        let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
+        bestRestaurant.showDescription();
     }
 
 
@@ -248,6 +248,7 @@ class App {
 
     eventZoomChanged() {
         this.map.addListener('zoom_changed', ()=> {
+            this.controlZoomForAddRestaurant();
             this.LatLng = this.map.getBounds();
             let south_Lat = this.LatLng.getSouthWest().lat();
             let south_Lng = this.LatLng.getSouthWest().lng();
@@ -264,6 +265,19 @@ class App {
             this.deleteRestaurant();
             this.addRestaurantSelected();
         });
+    }
+
+    controlZoomForAddRestaurant() {
+        google.maps.event.clearListeners(this.map, 'click');
+        if (this.map.getZoom() <= 14) {
+            this.map.addListener('click',(e)=>{
+                alert('Vous êtes a: Zoom'+this.map.getZoom()+' vous devait êtres a Zoom 15 minimum');
+            });
+            
+        }
+        else {
+            this.clickMapForAddRestaurant();
+        }
     }
 }
 
