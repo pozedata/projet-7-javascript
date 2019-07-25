@@ -178,6 +178,7 @@ class App {
                 this.listRestaurant.push(restaurant);
                 this.createDescription(restaurant);
                 this.closeModalAddRestaurant();
+                $('.messageNoRestaurant').remove();
                 $('#btnFormAddrestaurant').off('click');
             }
         })
@@ -218,21 +219,24 @@ class App {
     }
 
     showBestRestaurant() {
+        this.averageRestaurantRating = [];
         for (let restaurant of this.newListRestaurant) {
-            this.averageRestaurantRating = [];
             this.averageRestaurantRating.push(restaurant.averageStar);
         }
         this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
         let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
-        console.log(bestRestaurant)
+        this.verifRestaurantAroundUSer(bestRestaurant);
+    }
+
+    verifRestaurantAroundUSer(bestRestaurant) {
         if (bestRestaurant === undefined) {
-            console.log('pas de restaurant a proximiter compris dans vos critères');
+            $('#listGroup').append('<span class="messageNoRestaurant"><strong>Aucun restaurant trouver dans vos critère proche de vous</strong></br>Si vous voulez ajouter un restaurant:<ul><li>cliquer sur son emplacement sur la carte</li><li>remplsser le formulaire</li></ul></span>');
             $('.description').hide();
         }
         else {
+            $('.messageNoRestaurant').remove();
             bestRestaurant.showDescription();
         }
-        
     }
 
 
@@ -241,6 +245,7 @@ class App {
             this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
+            this.showBestRestaurant();
         });
     }
 
