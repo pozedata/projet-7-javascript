@@ -25,12 +25,15 @@
         <h1 class="titleContainer">Trouvez votre restaurant !</h1>
         <div class="row" id="test">
             <div class="col-lg-3 col-12">
+                    <h4 class="text-center">Restaurants a proximité</h4>
                 <div class="list-group overflow-auto" id="listGroup"></div>
             </div>
             <div class="col-lg-6 col-12">
+                <h4 class="text-center">Carte</h4>
                 <div class ="map" id="mapGoogle"></div>
             </div>
             <div class="col-lg-3 col-12">
+                <h4 class="text-center" id="titleDesc">Description</h4>
                 <div class ="description">
                     <div class="card overflow-auto">
                         <img class="card-img-top" id="imgStreetView">
@@ -239,7 +242,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088&libraries=places" async defer></script>
 
     <script src="../JSON/map.js"></script>
     <!-- <script src="../js/Map.js"></script> -->

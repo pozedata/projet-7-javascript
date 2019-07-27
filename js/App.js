@@ -16,8 +16,6 @@ class App {
 
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
-        // merde pas vrai fin de l'etape 1 et 2 
-        // il faut changer l'affichage du meilleure restaurant au chargemen de la page en y ajoutant les bord de la map
     }
 
     // methode qui créer les objet restaurant
@@ -64,6 +62,7 @@ class App {
             }
             this.deleteRestaurant();
             this.addRestaurantSelected();
+            this.showBestRestaurant();
         });
     }
 
@@ -81,7 +80,6 @@ class App {
     }
 
     initMap() {
-        // arrive pas en utilisant le fichier json 
         var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
 
         this.map = new google.maps.Map(document.getElementById('mapGoogle'), {
@@ -120,6 +118,7 @@ class App {
             this.infoWindow.setContent('Vous êtes ici');
             this.infoWindow.open(this.map);
             this.map.setCenter(pos);
+            this.findRestaurantPlace(pos);
           }, 
           function() {
             this.handleLocationError(true, this.infoWindow, this.map.getCenter());
@@ -129,6 +128,23 @@ class App {
           this.handleLocationError(false, this.infoWindow, this.map.getCenter());
         }
     }
+
+    findRestaurantPlace(pos) {
+        var request = {
+            location: pos,
+            radius: '500',
+            type: ['restaurant']
+        };
+
+        let service = new google.maps.places.PlacesService(this.map);
+        service.nearbySearch(request, this.callback);
+    }
+
+    callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            console.log(results);
+        }
+      }
 
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
@@ -180,6 +196,7 @@ class App {
                 this.listRestaurant.push(restaurant);
                 this.createDescription(restaurant);
                 this.closeModalAddRestaurant();
+                $('.messageNoRestaurant').remove();
                 $('#btnFormAddrestaurant').off('click');
             }
         })
@@ -192,22 +209,25 @@ class App {
             $('#modalAddRestaurant').modal('hide');
     }
 
+    selectRestaurantByBounds () {
+        this.LatLng = this.map.getBounds();
+        let south_Lat = this.LatLng.getSouthWest().lat();
+        let south_Lng = this.LatLng.getSouthWest().lng();
+        let north_Lat = this.LatLng.getNorthEast().lat();
+        let north_Lng = this.LatLng.getNorthEast().lng();
+        this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+            if (this.minStar !== undefined && this.maxStar !== undefined) {
+                return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+            }
+            else {
+                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+            }
+        });
+    }
+
     getLatLng(){
         this.map.addListener('bounds_changed', ()=> {
-            this.LatLng = this.map.getBounds();
-            let south_Lat = this.LatLng.getSouthWest().lat();
-            let south_Lng = this.LatLng.getSouthWest().lng();
-            let north_Lat = this.LatLng.getNorthEast().lat();
-            let north_Lng = this.LatLng.getNorthEast().lng();
-
-            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                if (this.minStar !== undefined && this.maxStar !== undefined) {
-                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-                }
-                else {
-                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-                }
-            });
+            this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
             this.showBestRestaurant();
@@ -217,67 +237,59 @@ class App {
     }
 
     showBestRestaurant() {
+        this.averageRestaurantRating = [];
         for (let restaurant of this.newListRestaurant) {
             this.averageRestaurantRating.push(restaurant.averageStar);
         }
         this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
         let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
-        bestRestaurant.showDescription();
+        this.verifRestaurantAroundUSer(bestRestaurant);
+    }
+
+    verifRestaurantAroundUSer(bestRestaurant) {
+        if (bestRestaurant === undefined) {
+            $('.messageNoRestaurant').remove();
+            $('#listGroup').append('<span class="messageNoRestaurant"><strong>Aucun restaurant trouver dans vos critère proche de vous</strong></br>Si vous voulez ajouter un restaurant:<ul><li>cliquer sur son emplacement sur la carte</li><li>remplsser le formulaire</li></ul></span>');
+            $('.description').hide();
+        }
+        else {
+            $('.messageNoRestaurant').remove();
+            bestRestaurant.showDescription();
+        }
     }
 
 
     eventGetLatLng() {
         this.map.addListener('dragend', ()=> {
-            this.LatLng = this.map.getBounds();
-            let south_Lat = this.LatLng.getSouthWest().lat();
-            let south_Lng = this.LatLng.getSouthWest().lng();
-            let north_Lat = this.LatLng.getNorthEast().lat();
-            let north_Lng = this.LatLng.getNorthEast().lng();
-            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                if (this.minStar !== undefined && this.maxStar !== undefined) {
-                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-                }
-                else {
-                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-                }
-            });
+            this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
+            this.showBestRestaurant();
         });
     }
 
     eventZoomChanged() {
         this.map.addListener('zoom_changed', ()=> {
             this.controlZoomForAddRestaurant();
-            this.LatLng = this.map.getBounds();
-            let south_Lat = this.LatLng.getSouthWest().lat();
-            let south_Lng = this.LatLng.getSouthWest().lng();
-            let north_Lat = this.LatLng.getNorthEast().lat();
-            let north_Lng = this.LatLng.getNorthEast().lng();
-            this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-                if (this.minStar !== undefined && this.maxStar !== undefined) {
-                    return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-                }
-                else {
-                    return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-                }
-            });
+            this.selectRestaurantByBounds();
             this.deleteRestaurant();
             this.addRestaurantSelected();
+            this.showBestRestaurant();
         });
     }
 
     controlZoomForAddRestaurant() {
         google.maps.event.clearListeners(this.map, 'click');
         if (this.map.getZoom() <= 14) {
-            this.map.addListener('click',(e)=>{
-                alert('Vous êtes a: Zoom'+this.map.getZoom()+' vous devait êtres a Zoom 15 minimum');
+            this.map.addListener('click',()=>{
+                alert('Vous êtes a: Zoom'+this.map.getZoom()+' vous devait êtres a 15 minimum');
             });
-            
         }
         else {
             this.clickMapForAddRestaurant();
+            console.log('possible');
         }
     }
 }
 
+// AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088
