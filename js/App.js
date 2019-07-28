@@ -13,6 +13,7 @@ class App {
         this.LatLng;
         this.minStar;
         this.maxStar;
+        this.service
 
         this.createObjectRestaurant();
         this.selectionRestaurantByRating();
@@ -130,21 +131,45 @@ class App {
     }
 
     findRestaurantPlace(pos) {
-        var request = {
+        let request = {
             location: pos,
             radius: '500',
             type: ['restaurant']
         };
 
-        let service = new google.maps.places.PlacesService(this.map);
-        service.nearbySearch(request, this.callback);
+        this.service = new google.maps.places.PlacesService(this.map);
+        console.log(this.service)
+        this.service.nearbySearch(request, this.recoverNewRestaurant, this.service);
     }
 
-    callback(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-            console.log(results);
-        }
-      }
+    recoverNewRestaurant(results, status, service) {
+        // if (status == google.maps.places.PlacesServiceStatus.OK) {
+            for (let restau of results) {
+                console.log(restau.vicinity);
+                // let placeId = restau.id
+                
+                let request2 = {
+                    placeId: restau.id,
+                    fields: ['review']
+                };
+                // console.log(service);
+                service.getDetails(request2, ()=>{console.log('place')});
+
+                // marche pas probablement pck on peut peut pasapeller de fonction dans cette méthode 
+        
+                function callback(place, status) {
+                    if (status == google.maps.places.PlacesServiceStatus.OK) {
+                        console.log(place)
+                    }
+                }
+                
+                // let id = this.listRestaurant.length
+                // let restaurant = new Restaurant(id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.ratings);
+                // this.listRestaurant.push(restaurant);
+            }
+        // }
+
+    }
 
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
@@ -231,7 +256,6 @@ class App {
             this.deleteRestaurant();
             this.addRestaurantSelected();
             this.showBestRestaurant();
-
             google.maps.event.clearListeners(this.map, 'bounds_changed');
          });
     }
@@ -255,6 +279,7 @@ class App {
         else {
             $('.messageNoRestaurant').remove();
             bestRestaurant.showDescription();
+            $('.description').show();
         }
     }
 
@@ -287,7 +312,6 @@ class App {
         }
         else {
             this.clickMapForAddRestaurant();
-            console.log('possible');
         }
     }
 }

@@ -83,6 +83,7 @@ class Restaurant {
 
     // création des élément description
     showDescription() {
+        $('.description').show();
         this.imgStreetView();        
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
