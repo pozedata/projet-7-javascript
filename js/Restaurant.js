@@ -1,5 +1,5 @@
 class Restaurant {
-    constructor(id, name, adress, lat, long, ratings){
+    constructor(id, name, adress, lat, long, averageStar, nbCommentUSer , ratings = []){
         this.id = id;
         this.name = name;
         this.adress = adress;
@@ -8,13 +8,18 @@ class Restaurant {
         this.ratings = ratings;
         this.comments = [];
         this.stars = [];
-        this.averageStar;
+        // this.averageStar; etape 1 
+        this.averageStar = averageStar;
         this.marker;
         this.infowindow;
         this.panorama;
 
-        this.splitRatings();
-        this.createAverageStars();
+        // etape 2 
+
+        this.nbCommentUSer = nbCommentUSer;
+
+        // this.splitRatings(); etape 1 
+        // this.createAverageStars(); etape 1 
     };
 
     // création du bouton du restaurant 
@@ -23,21 +28,30 @@ class Restaurant {
         $('#listGroup').append(buttonList);
     };
 
-    // récupération des notes et commentaires du restaurant
-    splitRatings(){
-        for (let elt of this.ratings) {
-            this.stars.push(elt.stars);
-            this.comments.push(elt.comment);
-        }
-    };
+    // récupération des notes et commentaires du restaurant ETAPE 1 
+    // splitRatings(){
+    //     for (let elt of this.ratings) {
+    //         this.stars.push(elt.stars);
+    //         this.comments.push(elt.comment);
+    //     }
+    // };
 
     // création de la moyenne des notes du restaurant 
     createAverageStars(){
-        let addition = 0;
-        for (let i=0; i<=this.stars.length-1; i++) {
-            addition += this.stars[i];
-        }
-        this.averageStar = addition/this.stars.length;
+        // let addition = 0;
+        // for (let i=0; i<=this.stars.length-1; i++) {
+        //     addition += this.stars[i];
+        // }
+        // this.averageStar = addition/this.stars.length;
+
+        // etape 3
+        let sumOfNote = this.averageStar * this.nbCommentUSer;
+        console.log('moyenne origine'+this.averageStar+'')
+        console.log('nb de comm'+this.nbCommentUSer+'')
+        console.log('multiplicatio '+sumOfNote+'')
+        this.averageStar = sumOfNote / this.nbCommentUSer;
+        console.log(this.averageStar)
+
     };
 
     // méthode pour gérer la note 
@@ -151,7 +165,7 @@ class Restaurant {
         $('#btnFormAddComment').off('click');
         $('#btnFormAddComment').click(()=>{ 
             if (($('#form-AddComment').val() !== "") && ($('#form-AddStar').val() !== "") && ($('#form-AddStar').val() >= 0) && ($('#form-AddStar').val() <= 5)) {
-                this.averageStar = 0;
+                this.nbCommentUSer = this.nbCommentUSer + 1;
                 let comment = $('#form-AddComment').val();
                 let star = parseFloat($('#form-AddStar').val());
                 this.comments.push(comment);
@@ -174,6 +188,19 @@ class Restaurant {
             $('#form-AddComment').val("");
             $('#form-AddStar').val("");
             $('#modalAddComment').modal('hide');
+    }
+
+    test() {             
+        let request2 = {
+            placeId: this.id,
+            fields: ['reviews', 'formatted_address']
+        };
+        return request2;
+    }
+
+    test2(results, status) {
+        console.log(results);
+        console.log(status);
     }
 }
 

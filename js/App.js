@@ -15,21 +15,21 @@ class App {
         this.maxStar;
         this.service
 
-        this.createObjectRestaurant();
+        // this.createObjectRestaurant();
         this.selectionRestaurantByRating();
     }
 
-    // methode qui créer les objet restaurant
-    createObjectRestaurant() {
-        $.getJSON('../JSON/restaurant.json', (elt)=> {
-            for (let restau of elt) {
-                let id = this.listRestaurant.length
-                let restaurant = new Restaurant(id, restau.restaurantName, restau.address, restau.lat, restau.long, restau.ratings);
-                this.listRestaurant.push(restaurant);
-            }
-            this.displayRestaurantElt();
-        });
-    }
+    // methode qui créer les objet restaurant ETAPE 1 
+    // createObjectRestaurant() {
+    //     $.getJSON('../JSON/restaurant.json', (elt)=> {
+    //         for (let restau of elt) {
+    //             let id = this.listRestaurant.length
+    //             let restaurant = new Restaurant(id, restau.restaurantName, restau.address, restau.lat, restau.long, restau.ratings);
+    //             this.listRestaurant.push(restaurant);
+    //         }
+    //         this.displayRestaurantElt();
+    //     });
+    // }
 
     displayRestaurantElt(){
         for (let restaurant of this.listRestaurant) {
@@ -138,37 +138,22 @@ class App {
         };
 
         this.service = new google.maps.places.PlacesService(this.map);
-        console.log(this.service)
-        this.service.nearbySearch(request, this.recoverNewRestaurant, this.service);
+        this.service.nearbySearch(request, this.recoverNewRestaurant.bind(this), this.service);
     }
 
-    recoverNewRestaurant(results, status, service) {
+    recoverNewRestaurant(results, status) {
         // if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (let restau of results) {
-                console.log(restau.vicinity);
-                // let placeId = restau.id
-                
-                let request2 = {
-                    placeId: restau.id,
-                    fields: ['review']
-                };
-                // console.log(service);
-                service.getDetails(request2, ()=>{console.log('place')});
-
-                // marche pas probablement pck on peut peut pasapeller de fonction dans cette méthode 
-        
-                function callback(place, status) {
-                    if (status == google.maps.places.PlacesServiceStatus.OK) {
-                        console.log(place)
-                    }
+                console.log(restau)
+                let restaurant = new Restaurant(restau.place_id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.rating, restau.user_ratings_total);
+                let request = restaurant.test();
+                if (restaurant.id === 'ChIJ2RyWAw8myhIRHvP-1smdTlg') {
+                    this.service.getDetails(request, restaurant.test2.bind(this));
                 }
-                
-                // let id = this.listRestaurant.length
-                // let restaurant = new Restaurant(id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.ratings);
-                // this.listRestaurant.push(restaurant);
+                this.listRestaurant.push(restaurant);
             }
+            this.displayRestaurantElt();
         // }
-
     }
 
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
