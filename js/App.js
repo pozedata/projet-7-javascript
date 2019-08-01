@@ -15,6 +15,7 @@ class App {
         this.maxStar;
         this.service
 
+
         // this.createObjectRestaurant();
         this.selectionRestaurantByRating();
     }
@@ -41,7 +42,14 @@ class App {
         restaurant.createTagList();
         restaurant.createMarker(this.map);
         $('#btn-'+restaurant.id+'').on("click",()=> {
+            let request = restaurant.requestDetails();
+                // if (restaurant.id === 'ChIJ2RyWAw8myhIRHvP-1smdTlg') {
+                    
+            this.service.getDetails(request, restaurant.test2.bind(this));
+            
+                // }
             restaurant.showDescription();
+            // console.log(restaurant.comments)
         });
     }
 
@@ -133,7 +141,7 @@ class App {
     findRestaurantPlace(pos) {
         let request = {
             location: pos,
-            radius: '500',
+            radius: '1500',
             type: ['restaurant']
         };
 
@@ -144,12 +152,8 @@ class App {
     recoverNewRestaurant(results, status) {
         // if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (let restau of results) {
-                console.log(restau)
+                console.log({restau})
                 let restaurant = new Restaurant(restau.place_id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.rating, restau.user_ratings_total);
-                let request = restaurant.test();
-                if (restaurant.id === 'ChIJ2RyWAw8myhIRHvP-1smdTlg') {
-                    this.service.getDetails(request, restaurant.test2.bind(this));
-                }
                 this.listRestaurant.push(restaurant);
             }
             this.displayRestaurantElt();

@@ -17,6 +17,8 @@ class Restaurant {
         // etape 2 
 
         this.nbCommentUSer = nbCommentUSer;
+        this.phoneNumber;
+        this.formattedAdress;
 
         // this.splitRatings(); etape 1 
         // this.createAverageStars(); etape 1 
@@ -101,11 +103,12 @@ class Restaurant {
         this.imgStreetView();        
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
-        $('#address').text('Adresse: '+this.adress+'');
-        this.addComentCard();
+        $('#nbUser').text(''+ this.nbCommentUSer+' utilisateur on evalués cette établissement');
+        // $('#address').text('Adresse: '+this.adress+''); etape 1 
+        // this.addComentCard(); etape 1 
         this.colorAverageStar();
         this.addCommentForRestaurant();
-        this.showAllComm();
+        // this.showAllComm(); etape 1 
         $('.closeModalAddCom').click(()=>{
             this.closeModalAddCom();
         });
@@ -137,17 +140,18 @@ class Restaurant {
         }
     }
 
+    // ETAPE 1
     // ajout des commentaires du restaurant sur la description 
-    addComentCard(){
-        if (this.comments.length < 2) {
-            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
-            $('#com2').text('');
-        }
-        else {
-            $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
-            $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
-        }
-    }
+    // addComentCard(){
+    //     if (this.comments.length < 2) {
+    //         $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+    //         $('#com2').text('');
+    //     }
+    //     else {
+    //         $('#com1').text('1- '+this.comments[0]+' ('+this.stars[0]+'/5)');
+    //         $('#com2').text('2- '+this.comments[1]+' ('+this.stars[1]+'/5)');
+    //     }
+    // }
 
     // =========== boite modal tous les commentaires =========== //
 
@@ -166,10 +170,11 @@ class Restaurant {
         $('#btnFormAddComment').click(()=>{ 
             if (($('#form-AddComment').val() !== "") && ($('#form-AddStar').val() !== "") && ($('#form-AddStar').val() >= 0) && ($('#form-AddStar').val() <= 5)) {
                 this.nbCommentUSer = this.nbCommentUSer + 1;
+                $('#nbUser').text(''+ this.nbCommentUSer+' utilisateur on evalués cette établissement');
                 let comment = $('#form-AddComment').val();
                 let star = parseFloat($('#form-AddStar').val());
-                this.comments.push(comment);
-                this.stars.push(star);
+                // this.comments.push(comment);
+                // this.stars.push(star);
                 this.showAllComm();
                 this.createAverageStars();
                 $('#'+this.id+'badgeAverageStar').text(this.fixedNumber(this.averageStar));
@@ -190,17 +195,34 @@ class Restaurant {
             $('#modalAddComment').modal('hide');
     }
 
-    test() {             
-        let request2 = {
+    requestDetails() {             
+        let request = {
             placeId: this.id,
-            fields: ['reviews', 'formatted_address']
+            fields: ['reviews', 'formatted_address', 'formatted_phone_number']
         };
-        return request2;
+        return request;
+        
     }
 
     test2(results, status) {
-        console.log(results);
-        console.log(status);
+        // this.phoneNumber = results.formatted_phone_number;
+        // this.formattedAdress = results.formatted_address;
+        // $('#phone').text('Téléphone: '+this.phoneNumber+'');
+        // $('#address').text('Adresse: '+results.formatted_address+'');
+        // this.showAllComm();
+
+        console.log(results.reviews);
+        for (let comment of results.reviews) {
+            console.log(comment.text);
+            
+        }
+        this.test3.bind(this);
+        
+        // this.comments.push(comment.text)
+    }
+
+    test3() {
+        console.log(this)
     }
 }
 

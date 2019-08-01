@@ -79,7 +79,7 @@ path {
 }
 
 .list-group {
-    height: 80vh;
+    height: 85vh;
 }
 
 .list-group button {
@@ -89,7 +89,7 @@ path {
 }
 
 .map {
-    height: 80vh;
+    height: 85vh;
 }
 
 .infoWindow {
@@ -98,7 +98,7 @@ path {
 }
 
 .description {
-    height: 80vh;
+    height: 85vh;
 }
 
 form button {
