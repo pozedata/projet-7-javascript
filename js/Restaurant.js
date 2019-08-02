@@ -39,7 +39,7 @@ class Restaurant {
     // };
 
     // création de la moyenne des notes du restaurant 
-    createAverageStars(){
+    createAverageStars(x){
         // let addition = 0;
         // for (let i=0; i<=this.stars.length-1; i++) {
         //     addition += this.stars[i];
@@ -47,11 +47,15 @@ class Restaurant {
         // this.averageStar = addition/this.stars.length;
 
         // etape 3
-        let sumOfNote = this.averageStar * this.nbCommentUSer;
+        let sumOfNote = this.averageStar * (this.nbCommentUSer - 1);
+
         console.log('moyenne origine'+this.averageStar+'')
-        console.log('nb de comm'+this.nbCommentUSer+'')
+        console.log('nb de comm'+(this.nbCommentUSer - 1)+'')
         console.log('multiplicatio '+sumOfNote+'')
-        this.averageStar = sumOfNote / this.nbCommentUSer;
+        this.averageStar = (sumOfNote + x) / this.nbCommentUSer;
+        console.log(x)
+        console.log(this.nbCommentUSer)
+        console.log( (sumOfNote + x))
         console.log(this.averageStar)
 
     };
@@ -104,6 +108,8 @@ class Restaurant {
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#nbUser').text(''+ this.nbCommentUSer+' utilisateur on evalués cette établissement');
+        $('#phone').text('Téléphone: '+this.phoneNumber+'');
+        $('#address').text('Adresse: '+this.formattedAdress+'');
         // $('#address').text('Adresse: '+this.adress+''); etape 1 
         // this.addComentCard(); etape 1 
         this.colorAverageStar();
@@ -171,18 +177,18 @@ class Restaurant {
             if (($('#form-AddComment').val() !== "") && ($('#form-AddStar').val() !== "") && ($('#form-AddStar').val() >= 0) && ($('#form-AddStar').val() <= 5)) {
                 this.nbCommentUSer = this.nbCommentUSer + 1;
                 $('#nbUser').text(''+ this.nbCommentUSer+' utilisateur on evalués cette établissement');
-                let comment = $('#form-AddComment').val();
-                let star = parseFloat($('#form-AddStar').val());
+                // let comment = $('#form-AddComment').val();
+                // let star = parseFloat($('#form-AddStar').val());
                 // this.comments.push(comment);
                 // this.stars.push(star);
                 this.showAllComm();
-                this.createAverageStars();
+                this.createAverageStars(parseFloat($('#form-AddStar').val()));
                 $('#'+this.id+'badgeAverageStar').text(this.fixedNumber(this.averageStar));
                 console.log(this);
                 this.closeModalAddCom();
                 $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
                 this.colorAverageStar();
-                this.addComentCard();
+                // this.addComentCard(); etape 1 
                 this.infowindow.setContent(this.contentInfoWindow());
             }
         });
@@ -204,26 +210,20 @@ class Restaurant {
         
     }
 
-    test2(results, status) {
-        // this.phoneNumber = results.formatted_phone_number;
-        // this.formattedAdress = results.formatted_address;
-        // $('#phone').text('Téléphone: '+this.phoneNumber+'');
-        // $('#address').text('Adresse: '+results.formatted_address+'');
-        // this.showAllComm();
+    // test2(results, status) {
+    //     // this.phoneNumber = results.formatted_phone_number;
+    //     // this.formattedAdress = results.formatted_address;
+    //     // $('#phone').text('Téléphone: '+this.phoneNumber+'');
+    //     // $('#address').text('Adresse: '+results.formatted_address+'');
+    //     // this.showAllComm();
 
-        console.log(results.reviews);
-        for (let comment of results.reviews) {
-            console.log(comment.text);
+    //     // console.log(results.reviews);
+    //     for (let comment of results.reviews) {
+    //         console.log(comment.text);
             
-        }
-        this.test3.bind(this);
-        
-        // this.comments.push(comment.text)
-    }
-
-    test3() {
-        console.log(this)
-    }
+    //     }
+    //     // this.comments.push(comment.text)
+    // }
 }
 
 // creer un fichier avec une varible global qui contient ma clef pour l'utiliser 

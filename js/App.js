@@ -8,7 +8,7 @@ class App {
         this.markerUser;
         this.averageRestaurantRating = [];
         this.highestRated; 
-        this.newListRestaurant = this.listRestaurant;
+        this.newListRestaurant;
         this.eltMap;
         this.LatLng;
         this.minStar;
@@ -42,15 +42,22 @@ class App {
         restaurant.createTagList();
         restaurant.createMarker(this.map);
         $('#btn-'+restaurant.id+'').on("click",()=> {
-            let request = restaurant.requestDetails();
-                // if (restaurant.id === 'ChIJ2RyWAw8myhIRHvP-1smdTlg') {
-                    
-            this.service.getDetails(request, restaurant.test2.bind(this));
-            
-                // }
-            restaurant.showDescription();
-            // console.log(restaurant.comments)
+            let request = restaurant.requestDetails();        
+            this.service.getDetails(request, this.callBackGetDetails.bind(this, restaurant));
         });
+    }
+
+    callBackGetDetails(restaurant ,results, status) {
+        console.log(restaurant)
+        restaurant.phoneNumber = results.formatted_phone_number;
+        restaurant.formattedAdress = results.formatted_address;
+        restaurant.showDescription();
+        console.log(results.reviews);
+        for (let comment of results.reviews) {
+            console.log(comment.text);
+            
+        }
+        // this.comments.push(comment.text)
     }
 
     selectionRestaurantByRating() {
@@ -88,6 +95,30 @@ class App {
         }
     }
 
+    showBestRestaurant() {
+        this.averageRestaurantRating = [];
+        for (let restaurant of this.newListRestaurant) {
+            this.averageRestaurantRating.push(restaurant.averageStar);
+        }
+        this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
+        let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
+        this.verifRestaurantAroundUSer(bestRestaurant);
+        console.log(this.newListRestaurant);
+    }
+
+    verifRestaurantAroundUSer(bestRestaurant) {
+        if (bestRestaurant === undefined) {
+            $('.messageNoRestaurant').remove();
+            $('#listGroup').append('<span class="messageNoRestaurant"><strong>Aucun restaurant trouver dans vos critère proche de vous</strong></br>Si vous voulez ajouter un restaurant:<ul><li>cliquer sur son emplacement sur la carte</li><li>remplsser le formulaire</li></ul></span>');
+            $('.description').hide();
+        }
+        else {
+            $('.messageNoRestaurant').remove();
+            bestRestaurant.showDescription();
+            // $('.description').show();
+        }
+    }
+
     initMap() {
         var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
 
@@ -101,9 +132,9 @@ class App {
         });
 
         this.clickMapForAddRestaurant();
-        this.eventGetLatLng();
-        this.getLatLng();
-        this.eventZoomChanged();
+        // this.eventGetLatLng();
+        // this.getLatLng();
+        // this.eventZoomChanged();
 
         this.map.mapTypes.set('styled_map', styledMapType);
         this.map.setMapTypeId('styled_map'); 
@@ -127,7 +158,7 @@ class App {
             this.infoWindow.setContent('Vous êtes ici');
             this.infoWindow.open(this.map);
             this.map.setCenter(pos);
-            this.findRestaurantPlace(pos);
+            this.findRestaurantPlace();
           }, 
           function() {
             this.handleLocationError(true, this.infoWindow, this.map.getCenter());
@@ -138,25 +169,31 @@ class App {
         }
     }
 
-    findRestaurantPlace(pos) {
+    findRestaurantPlace() {
         let request = {
-            location: pos,
+            location: this.map.getCenter(),
             radius: '1500',
             type: ['restaurant']
         };
 
         this.service = new google.maps.places.PlacesService(this.map);
-        this.service.nearbySearch(request, this.recoverNewRestaurant.bind(this), this.service);
+        this.service.nearbySearch(request, this.recoverNewRestaurant.bind(this));
     }
 
     recoverNewRestaurant(results, status) {
         // if (status == google.maps.places.PlacesServiceStatus.OK) {
+            this.listRestaurant = [];
             for (let restau of results) {
-                console.log({restau})
                 let restaurant = new Restaurant(restau.place_id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.rating, restau.user_ratings_total);
                 this.listRestaurant.push(restaurant);
             }
+
             this.displayRestaurantElt();
+            this.newListRestaurant = this.listRestaurant;
+            this.eventGetLatLng();
+            this.getLatLng();
+            this.eventZoomChanged();
+            
         // }
     }
 
@@ -248,30 +285,6 @@ class App {
             google.maps.event.clearListeners(this.map, 'bounds_changed');
          });
     }
-
-    showBestRestaurant() {
-        this.averageRestaurantRating = [];
-        for (let restaurant of this.newListRestaurant) {
-            this.averageRestaurantRating.push(restaurant.averageStar);
-        }
-        this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
-        let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
-        this.verifRestaurantAroundUSer(bestRestaurant);
-    }
-
-    verifRestaurantAroundUSer(bestRestaurant) {
-        if (bestRestaurant === undefined) {
-            $('.messageNoRestaurant').remove();
-            $('#listGroup').append('<span class="messageNoRestaurant"><strong>Aucun restaurant trouver dans vos critère proche de vous</strong></br>Si vous voulez ajouter un restaurant:<ul><li>cliquer sur son emplacement sur la carte</li><li>remplsser le formulaire</li></ul></span>');
-            $('.description').hide();
-        }
-        else {
-            $('.messageNoRestaurant').remove();
-            bestRestaurant.showDescription();
-            $('.description').show();
-        }
-    }
-
 
     eventGetLatLng() {
         this.map.addListener('dragend', ()=> {
