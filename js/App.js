@@ -2,8 +2,6 @@ class App {
     constructor(){
         this.listRestaurant = [];
         this.map;
-        // this.map = new Map();
-        // this.map.initMap();
         this.infoWindow;
         this.markerUser;
         this.averageRestaurantRating = [];
@@ -19,9 +17,6 @@ class App {
 
         this.transformLowerCase();
         this.selectionRestaurantByRating()
-        
-        // this.createObjectRestaurant();
-        // this.selectionRestaurantByRating();
     }
 
     transformLowerCase() {
@@ -42,22 +37,7 @@ class App {
             }
             return str;
         }
-        // alert(texte.noAccent().toLowerCase());
     }
-
-    // methode qui créer les objet restaurant ETAPE 1 
-    // createObjectRestaurant() {
-    //     $.getJSON('../JSON/restaurant.json', (elt)=> {
-    //         for (let restau of elt) {
-    //             let id = this.listRestaurant.length
-    //             let restaurant = new Restaurant(id, restau.restaurantName, restau.address, restau.lat, restau.long, restau.ratings);
-    //             this.listRestaurant.push(restaurant);
-    //         }
-    //         this.displayRestaurantElt();
-    //     });
-    // }
-
-
 
     initMap() {
         var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
@@ -70,19 +50,23 @@ class App {
                         'styled_map']
               }
         });
-        
-        // this.eventGetLatLng();
-        // this.getLatLng();
-        // this.eventZoomChanged();
+
         this.map.mapTypes.set('styled_map', styledMapType);
         this.map.setMapTypeId('styled_map'); 
 
         this.infoWindow = new google.maps.InfoWindow;
 
+        this.tryGeolocalisation();
+        this.clickMapForAddRestaurant();
+        this.eventDragend();
+        this.eventZoomChanged();
+    }
+
+    tryGeolocalisation(){
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position)=> {
-            var pos = {
+            const pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
@@ -91,14 +75,14 @@ class App {
                 map: this.map,
                 icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
             });
-      
+              
             this.infoWindow.setPosition(pos);
             this.infoWindow.setContent('Vous êtes ici');
             this.infoWindow.open(this.map);
             this.map.setCenter(pos);
             this.findRestaurantPlace();
             }, 
-            function() {
+            ()=> {
                 this.handleLocationError(true, this.infoWindow, this.map.getCenter());
             });
         } 
@@ -106,9 +90,6 @@ class App {
             // Browser doesn't support Geolocation
             this.handleLocationError(false, this.infoWindow, this.map.getCenter());
         }
-        this.clickMapForAddRestaurant();
-        this.eventDragend();
-        this.eventZoomChanged();
     }
 
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -132,7 +113,6 @@ class App {
     
     recoverNewRestaurant(results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-            this.listRestaurant = [];
             for (let restau of results) {
                 let restaurant = new Restaurant(restau.place_id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.rating, restau.user_ratings_total);
                 this.listRestaurant.push(restaurant);
@@ -166,12 +146,7 @@ class App {
         let north_Lat = this.LatLng.getNorthEast().lat();
         let north_Lng = this.LatLng.getNorthEast().lng();
         this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-            if (this.minStar !== undefined && this.maxStar !== undefined) {
-                return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
-            }
-            else {
-                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
-            }
+            return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
         });
     }
 
@@ -198,27 +173,16 @@ class App {
     createDescription(restaurant) {
         restaurant.createTagList();
         restaurant.createMarker(this.map);
-        this.markers.push(restaurant.marker)
+        this.markers.push(restaurant.marker);
+        this.eventClickOnBtnRestaurant(restaurant);
+        this.eventMarkerRestaurant(restaurant);
+    }
+
+    eventClickOnBtnRestaurant(restaurant) {
         $('#btn-'+restaurant.id+'').on("click",()=> {
             let request = restaurant.requestDetails();        
             this.service.getDetails(request, this.callBackGetDetails.bind(this, restaurant));
         });
-        this.eventMarkerRestaurant(restaurant);
-    }
-    
-    callBackGetDetails(restaurant ,results, status) {
-        if (restaurant.recoverElt === false){
-            restaurant.recoverElt = true; 
-            restaurant.phoneNumber = results.formatted_phone_number;
-            restaurant.formattedAddress = results.formatted_address;
-            for (let comment of results.reviews) {
-                if (comment.text !== "") {
-                    restaurant.comments.push(comment.text);
-                    restaurant.stars.push(comment.rating);
-                }
-            }
-        }
-        restaurant.showDescription();
     }
 
     eventMarkerRestaurant(restaurant) {
@@ -233,6 +197,23 @@ class App {
                 restaurant.infowindow.open(this.map, restaurant.marker);
             } 
         });
+    }
+    
+    callBackGetDetails(restaurant ,results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            if (restaurant.recoverElt === false){
+                restaurant.recoverElt = true; 
+                restaurant.phoneNumber = results.formatted_phone_number;
+                restaurant.formattedAddress = results.formatted_address;
+                for (let comment of results.reviews) {
+                    if (comment.text !== "") {
+                        restaurant.comments.push(comment.text);
+                        restaurant.stars.push(comment.rating);
+                    }
+                }
+            }
+            restaurant.showDescription();
+        }
     }
 
     showBestRestaurant() {
@@ -360,18 +341,19 @@ class App {
         this.map.addListener('dragend', ()=> {
             this.deleteRestaurant();
             this.findRestaurantPlace(); 
+            console.log(this.newListRestaurant)
         });
     }
 
     eventZoomChanged() {
         this.map.addListener('zoom_changed', ()=> {
-            this.controlZoomForAddRestaurant();
+            this.controlZoomForRestaurant();
             this.deleteRestaurant();
             this.findRestaurantPlace(); 
         });
     }
     
-    controlZoomForAddRestaurant() {
+    controlZoomForRestaurant() {
         google.maps.event.clearListeners(this.map, 'click');
         this.controlAddRestaurant();
         this.changeRadiusRequest();
@@ -412,4 +394,3 @@ class App {
     }
 }
 
-// AIzaSyBmTN7usD5QTF7dLF_4SgQ5KPwNZPG8088

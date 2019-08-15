@@ -5,25 +5,16 @@ class Restaurant {
         this.address = address;
         this.lat = lat;
         this.long = long;
-        // this.ratings = ratings;
         this.comments = [];
         this.stars = [];
-        // this.averageStar; etape 1 
         this.averageStar = averageStar;
         this.marker;
         this.infowindow;
         this.panorama;
-
-        // etape 2 
-
         this.nbCommentUSer = nbCommentUSer;
         this.phoneNumber;
         this.formattedAddress;
         this.recoverElt = false; 
-
-        // this.splitRatings(); etape 1 
-        // this.createAverageStars(); etape 1 
-        this.recoverCommentFromPlace();
     };
 
     // création du bouton du restaurant 
@@ -32,42 +23,9 @@ class Restaurant {
         $('#listGroup').append(buttonList);
     };
 
-    recoverCommentFromPlace() {
-        $('#btn-'+this.id+'').on("click",()=> {
-            console.log('restaurant clicker')
-            $(window).trigger('recoverRatings', [this]);
-        });
-    }
-
-    // récupération des notes et commentaires du restaurant ETAPE 1 
-    // splitRatings(){
-    //     for (let elt of this.ratings) {
-    //         this.stars.push(elt.stars);
-    //         this.comments.push(elt.comment);
-    //     }
-    // };
-
-    // création de la moyenne des notes du restaurant 
     createAverageStars(x){
-        // let addition = 0;
-        // for (let i=0; i<=this.stars.length-1; i++) {
-        //     addition += this.stars[i];
-        // }
-        // this.averageStar = addition/this.stars.length;
-        
-
-        // etape 3
         let sumOfNote = this.averageStar * (this.nbCommentUSer - 1);
-
-        console.log('moyenne origine'+this.averageStar+'')
-        console.log('nb de comm'+(this.nbCommentUSer - 1)+'')
-        console.log('multiplicatio '+sumOfNote+'')
         this.averageStar = (sumOfNote + x) / this.nbCommentUSer;
-        console.log(x)
-        console.log(this.nbCommentUSer)
-        console.log( (sumOfNote + x))
-        console.log(this.averageStar)
-
     };
 
     // méthode pour gérer la note 
@@ -91,15 +49,6 @@ class Restaurant {
         this.infowindow = new google.maps.InfoWindow({
             content: this.contentInfoWindow()
         });
-        // this.marker.addListener('click', ()=> {
-        //     let sizeMap = Math.round($(map.getDiv()).children().eq(0).width());
-        //     let sizeScreen = Math.round(window.innerWidth);
-        //     // this.showDescription();
-        //     $('#btn-'+this.id+'').focus();
-        //     if (sizeMap === sizeScreen) {
-        //         this.infowindow.open(map, this.marker);
-        //     } 
-        // });
     }
 
     // contenue de l'info bulle marqueur  
@@ -114,14 +63,12 @@ class Restaurant {
     // création des élément description
     showDescription() {
         $('.description').show();
-        this.imgStreetView();        
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#nbUser').text(''+ this.nbCommentUSer+' utilisateur(s) on evalués cette établissement');
         $('#phone').text('Téléphone: '+this.phoneNumber+'');
         $('#address').text('Adresse: '+this.formattedAddress+'');
-        // $('#address').text('Adresse: '+this.address+''); etape 1 
-        // this.addComentCard(); etape 1 
+        this.imgStreetView(); 
         this.colorAverageStar();
         this.addCommentForRestaurant();
         this.showAllComm();
@@ -181,11 +128,9 @@ class Restaurant {
                 this.showAllComm();
                 this.createAverageStars(parseFloat($('#form-AddStar').val()));
                 $('#'+this.id+'badgeAverageStar').text(this.fixedNumber(this.averageStar));
-                console.log(this);
                 this.closeModalAddCom();
                 $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
                 this.colorAverageStar();
-                // this.addComentCard(); etape 1 
                 this.infowindow.setContent(this.contentInfoWindow());
             }
         });
@@ -204,9 +149,5 @@ class Restaurant {
             fields: ['reviews', 'formatted_address', 'formatted_phone_number']
         };
         return request;
-        
     }
 }
-
-// creer un fichier avec une varible global qui contient ma clef pour l'utiliser 
-// et .gitignore
