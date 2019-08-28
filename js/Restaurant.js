@@ -147,8 +147,9 @@ class Restaurant {
                 $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
                 this.colorAverageStar();
                 this.infowindow.setContent(this.contentInfoWindow());
-                console.log(this)
-                // $(window).trigger('addThisOnNewList', [this]);
+                 $(window).trigger('addThisOnNewList', [{
+                    restaurant : this
+                }]);
             }
             this.closeModalAddCom();
         });

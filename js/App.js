@@ -18,12 +18,20 @@ class App {
 
         this.transformNoAccent();
         this.selectionRestaurantByRating();
-        // $(window).on('addThisOnNewList', () => {this.addRestaurantOnNewList()});
+        $(window).on('addThisOnNewList', (event, data) => {this.addRestaurantOnNewList(data)});
     }
 
-    // addRestaurantOnNewList() {
-    //     console.log('salut');
-    // }
+    // méthode qui enregistre le restaurant qui a un nouveau commentaire 
+    addRestaurantOnNewList(data) {
+        this.newListRestaurant.push(data.restaurant);
+        this.findRestaurantDuplicateForNewRestaurant();
+    }
+
+    // méthode qui vérifie et supprime les doublons
+    findRestaurantDuplicateForNewRestaurant(){
+        let uniq = {};
+        this.newListRestaurant = this.newListRestaurant.filter(obj => !uniq[obj.name.noAccent().toLowerCase()] && (uniq[obj.name.noAccent().toLowerCase()] = true));
+    }
 
     // méthode pour récuperer une chaine de caractère sans accent 
     transformNoAccent() {
@@ -144,13 +152,13 @@ class App {
     
     //méthode qui gère le resultats de la recherche de restaurant
     recoverNewRestaurant(results, status) {
-        if ((status == google.maps.places.PlacesServiceStatus.OK) || (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS)) {
+        if ((status == google.maps.places.PlacesServiceStatus.OK) || (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS)) {  
+            this.addRestaurantAddByUser();   
             for (let restau of results) {
                 let restaurant = new Restaurant(restau.place_id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.rating, restau.user_ratings_total);
                 this.listRestaurant.push(restaurant);
             }
             if (this.map.getZoom() > 8) {
-                this.addRestaurantAddByUser();
                 this.selectRestaurantByBounds();
                 this.verfiFakeRestaurant();
                 this.findRestaurantDuplicate();
@@ -204,13 +212,13 @@ class App {
     // méthode pour ranger le tableau de manière croissante (du restaurant qui a la plus d'avis a celui qui en a le moins)
     compare(x, y) {
         const eltY = y.nbCommentUSer;
-        const eltX = x.nbCommentUSer;
+        const eltX = x.nbCommentUSer; // propriété
         return eltY - eltX;
     }
 
     // méthode qui vérifie et supprime les doublons
     findRestaurantDuplicate(){
-        var uniq = {};
+        let uniq = {};
         this.listRestaurant = this.listRestaurant.filter(obj => !uniq[obj.name.noAccent().toLowerCase()] && (uniq[obj.name.noAccent().toLowerCase()] = true));
     }
     
@@ -417,7 +425,6 @@ class App {
     eventDragend() {
         this.map.addListener('dragend', ()=> {
             this.findRestaurantPlace(); 
-            console.log(this.newListRestaurant);
         });
     }
 
@@ -426,7 +433,6 @@ class App {
         this.map.addListener('zoom_changed', ()=> {
             this.controlZoomForRestaurant();
             this.findRestaurantPlace(); 
-            console.log('zoom')
         });
     }
     
