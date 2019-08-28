@@ -17,12 +17,13 @@ class Restaurant {
         this.recoverElt = false; 
     };
 
-    // création du bouton du restaurant 
+    // création du bouton du restaurant (liste)
     createTagList() {
         let buttonList = ('<button type="button" id="btn-'+this.id+'" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">' + this.name + '<span class="badge badge-light badge-pill" id="'+this.id+'badgeAverageStar">'+ this.fixedNumber(this.averageStar) +'</span></button>');
         $('#listGroup').append(buttonList);
     };
 
+    // calcul de la note moyenne du restaurant
     createAverageStars(x){
         let sumOfNote = this.averageStar * (this.nbCommentUSer - 1);
         this.averageStar = (sumOfNote + x) / this.nbCommentUSer;
@@ -60,14 +61,29 @@ class Restaurant {
 
     // =========== Affichage de la decription du restaurant =========== //
 
-    // création des élément description
+    // création des éléments descriptions
     showDescription() {
         $('.description').show();
         $('.card-body h5').text(this.name);
         $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
         $('#nbUser').text(''+ this.nbCommentUSer+' utilisateur(s) on evalués cette établissement');
-        $('#phone').text('Téléphone: '+this.phoneNumber+'');
-        $('#address').text('Adresse: '+this.formattedAddress+'');
+        if (this.phoneNumber !== undefined) {
+            $('#phone').text('Téléphone: '+this.phoneNumber+'');
+        }
+        else {
+            $('#phone').text('Téléphone: Aucun numéro de téléphone enregistré');
+        }
+        if (this.formattedAddress !== undefined) {
+            $('#address').text('Adresse: '+this.formattedAddress+'');
+        }
+        else {
+            if (this.address !== undefined){
+                $('#address').text('Adresse: '+this.address+'');
+            }
+            else {
+                $('#address').text('Adresse: Aucune adresse enregistrée');
+            }
+        }
         this.imgStreetView(); 
         this.colorAverageStar();
         this.addCommentForRestaurant();
@@ -128,11 +144,13 @@ class Restaurant {
                 this.showAllComm();
                 this.createAverageStars(parseFloat($('#form-AddStar').val()));
                 $('#'+this.id+'badgeAverageStar').text(this.fixedNumber(this.averageStar));
-                this.closeModalAddCom();
                 $('#starAverage').text('Note du restaurant : '+this.fixedNumber(this.averageStar)+'/5');
                 this.colorAverageStar();
                 this.infowindow.setContent(this.contentInfoWindow());
+                console.log(this)
+                // $(window).trigger('addThisOnNewList', [this]);
             }
+            this.closeModalAddCom();
         });
     }
 
@@ -143,6 +161,7 @@ class Restaurant {
             $('#modalAddComment').modal('hide');
     }
 
+    // requête pour méthode getDetails
     requestDetails() {             
         let request = {
             placeId: this.id,

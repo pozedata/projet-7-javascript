@@ -6,7 +6,7 @@ class App {
         this.markerUser;
         this.averageRestaurantRating = [];
         this.highestRated; 
-        this.newListRestaurant;
+        this.newListRestaurant = [];
         this.eltMap;
         this.LatLng;
         this.minStar;
@@ -14,12 +14,19 @@ class App {
         this.service;
         this.markers = []
         this.radius = 1500;
+        this.country;
 
-        this.transformLowerCase();
-        this.selectionRestaurantByRating()
+        this.transformNoAccent();
+        this.selectionRestaurantByRating();
+        // $(window).on('addThisOnNewList', () => {this.addRestaurantOnNewList()});
     }
 
-    transformLowerCase() {
+    // addRestaurantOnNewList() {
+    //     console.log('salut');
+    // }
+
+    // méthode pour récuperer une chaine de caractère sans accent 
+    transformNoAccent() {
         String.prototype.noAccent = function(){
             var accent = [
                 /[\300-\306]/g, /[\340-\346]/g, // A, a
@@ -39,6 +46,7 @@ class App {
         }
     }
 
+    // initialisation de la carte google map
     initMap() {
         var styledMapType = new google.maps.StyledMapType(StyleMap ,{name: 'Tropodvisor'});
 
@@ -46,8 +54,7 @@ class App {
             center: {lat: 48.888568, lng: 2.348442},
             zoom: 15,
             mapTypeControlOptions: {
-                mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain',
-                        'styled_map']
+                mapTypeIds: ['roadmap', 'satellite', 'styled_map']
               }
         });
 
@@ -62,6 +69,7 @@ class App {
         this.eventZoomChanged();
     }
 
+    // méthode qui test la géolocalisation 
     tryGeolocalisation(){
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
@@ -77,7 +85,7 @@ class App {
             });
               
             this.infoWindow.setPosition(pos);
-            this.infoWindow.setContent('Vous êtes ici');
+            this.infoWindow.setContent('<span class="grey">Vous êtes ici</span>');
             this.infoWindow.open(this.map);
             this.map.setCenter(pos);
             this.findRestaurantPlace();
@@ -92,32 +100,57 @@ class App {
         }
     }
 
+    // méthode qui gère si la localisation a échoué
     handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
+        let errorFail = '<h2 class="grey">Le service de géolocalisation a échoué</h2><p class="grey">L\'adresse actuelle est : 102 Rue Doudeauville, 75018 Paris, France</p>'
+        let errorBrowser = '<h2 class="grey">Votre navigateur ne supporte pas la géolocalisation</h2>';
+        infoWindow.setContent(browserHasGeolocation ? errorFail : errorBrowser);
         infoWindow.open(this.map);
+        this.findRestaurantPlace();
     }
 
+    // méthode qui lance la recherche de restaurant
     findRestaurantPlace() {
         let request = {
             location: this.map.getCenter(),
             radius: this.radius,
             type: ['restaurant']
         };
-    
         this.service = new google.maps.places.PlacesService(this.map);
-        this.service.nearbySearch(request, this.recoverNewRestaurant.bind(this));
+        this.service.nearbySearch(request, this.refreshMap.bind(this));
+    }
+
+    // méthode qui rafraichit la map
+    refreshMap(results, status) {
+        this.deleteRestaurantList();
+        this.recoverNewRestaurant(results, status);
+    }
+
+    // méthode qui supprime les bouton restaurant de la liste
+    deleteRestaurantList() { 
+        for (let restaurant of this.listRestaurant){
+            $('#btn-'+restaurant.id+'').remove();
+        }
+        this.setMapOnAll();
+    }
+
+    // méthode qui supprime les marqueurs sur la map 
+    setMapOnAll() {
+        for (var i = 0; i < this.markers.length; i++) {
+          this.markers[i].setMap(null);
+        }
     }
     
+    //méthode qui gère le resultats de la recherche de restaurant
     recoverNewRestaurant(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
+        if ((status == google.maps.places.PlacesServiceStatus.OK) || (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS)) {
             for (let restau of results) {
                 let restaurant = new Restaurant(restau.place_id, restau.name, restau.vicinity, restau.geometry.location.lat(), restau.geometry.location.lng(), restau.rating, restau.user_ratings_total);
                 this.listRestaurant.push(restaurant);
             }
             if (this.map.getZoom() > 8) {
+                this.addRestaurantAddByUser();
                 this.selectRestaurantByBounds();
                 this.verfiFakeRestaurant();
                 this.findRestaurantDuplicate();
@@ -126,50 +159,71 @@ class App {
             }
             else {
                 $('.messageNoRestaurant').remove();
-                $('#listGroup').append('<span class="messageNoRestaurant"><strong>Aucun restaurant rechercher</strong></br>vous êtes acteullement a un zoom de '+this.map.getZoom()+', la recherche de restaurant se fait a partir de zoom 9</span>');
+                $('#listGroup').append('<span class="messageNoRestaurant"><strong>Aucun restaurant rechercher</strong></br>vous êtes actuellement a un zoom de '+this.map.getZoom()+', la recherche de restaurant se fait a partir de zoom 9</span>');
             }
+        }
+        else {
+            $('.messageNoRestaurant').remove();
+            $('#listGroup').append('<span class="messageNoRestaurant"><strong>Echec sur la recherche de restaurant</strong></span>');
         }
     }
 
+    // méthode qui regroupe les liste de restaurant
+    addRestaurantAddByUser() {
+        if (this.newListRestaurant.length !== 0) {
+            $.merge(this.listRestaurant, this.newListRestaurant);
+        }
+    }
+
+    // méthode qui supprime du tableau les restaurants qui n'ont pas d'utilisateur ou de note
     verfiFakeRestaurant() {
-        for (let i = 0; i < this.newListRestaurant.length; i++) {
-            if ((this.newListRestaurant[i].averageStar === NaN) || (this.newListRestaurant[i].nbCommentUSer === undefined)) {
-                delete this.newListRestaurant[i];
+        for (let i = 0; i < this.listRestaurant.length; i++) {
+            if ((this.listRestaurant[i].averageStar === NaN) || (this.listRestaurant[i].nbCommentUSer === undefined)) {
+                delete this.listRestaurant[i];
             }
         }
     }
 
+    // méthode qui retourne les restaurants selon leurs coordonées gps (compris dans la zone que la carte affiche)
     selectRestaurantByBounds() {
         this.LatLng = this.map.getBounds();
         let south_Lat = this.LatLng.getSouthWest().lat();
         let south_Lng = this.LatLng.getSouthWest().lng();
         let north_Lat = this.LatLng.getNorthEast().lat();
         let north_Lng = this.LatLng.getNorthEast().lng();
-        this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
-            return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+        this.listRestaurant = $.grep(this.listRestaurant, (elt) => {
+            if (this.minStar !== undefined && this.maxStar !== undefined) {
+                return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)))
+            }
+            else {
+                return ((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng));
+            }
         });
     }
 
-    // méthode pour ranger le tableau de manière décroissante
+    // méthode pour ranger le tableau de manière croissante (du restaurant qui a la plus d'avis a celui qui en a le moins)
     compare(x, y) {
         const eltY = y.nbCommentUSer;
         const eltX = x.nbCommentUSer;
         return eltY - eltX;
     }
 
+    // méthode qui vérifie et supprime les doublons
     findRestaurantDuplicate(){
         var uniq = {};
-        this.newListRestaurant = this.newListRestaurant.filter(obj => !uniq[obj.name.noAccent().toLowerCase()] && (uniq[obj.name.noAccent().toLowerCase()] = true));
+        this.listRestaurant = this.listRestaurant.filter(obj => !uniq[obj.name.noAccent().toLowerCase()] && (uniq[obj.name.noAccent().toLowerCase()] = true));
     }
     
+    // méthode qui ajoute les restaurants 
     addRestaurantSelected() {
         this.markers = [];
-        this.newListRestaurant.sort(this.compare);
-        for (let restaurant of this.newListRestaurant){
+        this.listRestaurant.sort(this.compare);
+        for (let restaurant of this.listRestaurant){
             this.createDescription(restaurant);
         }
     }
 
+    // méthode qui créer les éléménts du restaurants (descrition, boutons ... )
     createDescription(restaurant) {
         restaurant.createTagList();
         restaurant.createMarker(this.map);
@@ -178,27 +232,31 @@ class App {
         this.eventMarkerRestaurant(restaurant);
     }
 
+    // méthode qui gère le click sur le bouton du restaurant
     eventClickOnBtnRestaurant(restaurant) {
         $('#btn-'+restaurant.id+'').on("click",()=> {
             let request = restaurant.requestDetails();        
             this.service.getDetails(request, this.callBackGetDetails.bind(this, restaurant));
+            restaurant.showDescription();
         });
     }
 
+    // méthode qui gère le click sur le marqueur du restaurant
     eventMarkerRestaurant(restaurant) {
         restaurant.marker.addListener('click', ()=> {
             let request = restaurant.requestDetails();        
             this.service.getDetails(request, this.callBackGetDetails.bind(this, restaurant));
             let sizeMap = Math.round($(this.map.getDiv()).children().eq(0).width());
             let sizeScreen = Math.round(window.innerWidth);
-            restaurant.showDescription();
             $('#btn-'+restaurant.id+'').focus();
+            restaurant.showDescription();
             if (sizeMap === sizeScreen) {
                 restaurant.infowindow.open(this.map, restaurant.marker);
             } 
         });
     }
     
+    // méthode callback pour la fonction getDetails
     callBackGetDetails(restaurant ,results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
             if (restaurant.recoverElt === false){
@@ -211,21 +269,23 @@ class App {
                         restaurant.stars.push(comment.rating);
                     }
                 }
+                restaurant.showDescription();
             }
-            restaurant.showDescription();
         }
     }
 
+    // méthode qui affiche le meilleure restaurants de la zone
     showBestRestaurant() {
         this.averageRestaurantRating = [];
-        for (let restaurant of this.newListRestaurant) {
+        for (let restaurant of this.listRestaurant) {
             this.averageRestaurantRating.push(restaurant.averageStar);
         }
         this.highestRated = Math.max.apply(null, this.averageRestaurantRating);
-        let bestRestaurant = this.newListRestaurant.find(elt => (elt.averageStar === this.highestRated));
+        let bestRestaurant = this.listRestaurant.find(elt => (elt.averageStar === this.highestRated));
         this.verifRestaurantAroundUSer(bestRestaurant);
     }
 
+    // méthode qui vérifie si il y a des restaurant dans la zone 
     verifRestaurantAroundUSer(bestRestaurant) {
         if (bestRestaurant === undefined) {
             $('.messageNoRestaurant').remove();
@@ -240,8 +300,10 @@ class App {
         }
     }
 
+    // méthode qui retourne les restaurants selon leurs notes (définit par l'utilisateur)
     selectionRestaurantByRating() {
         $('#valForm').on('click',()=>{
+            this.deleteRestaurantList();
             this.minStar = $('#form-min').val();
             this.maxStar = $('#form-max').val();
             let south_Lat = this.LatLng.getSouthWest().lat();
@@ -252,44 +314,35 @@ class App {
                 alert('la note minimum attribuer et plus grande que la note maximum');
             }
             else {
-                this.newListRestaurant = $.grep(this.listRestaurant, (elt) => {
+                this.listRestaurant = $.grep(this.listRestaurant, (elt) => {
                     return ((elt.averageStar >= this.minStar) && (elt.averageStar <= this.maxStar)) && (((elt.lat <= north_Lat)&&(elt.lat >= south_Lat)) && ((elt.long <= north_Lng)&&(elt.long >= south_Lng)));
                 });
             }
-            this.findRestaurantDuplicate()
-            this.deleteRestaurant();
-            this.addRestaurantSelected();
-            this.showBestRestaurant();
+            this.findRestaurantPlace(); 
         });
     }
 
-    deleteRestaurant() {
-        for (let restaurant of this.listRestaurant){
-            $('#btn-'+restaurant.id+'').remove();
-        }
-        this.setMapOnAll();
-    }
-
-    setMapOnAll() {
-        for (var i = 0; i < this.markers.length; i++) {
-          this.markers[i].setMap(null);
-        }
-    }
-
+    // méthode pour l'ajout d'un restaurant lors du click sur la map
     clickMapForAddRestaurant() {
         this.map.addListener('click',(e)=>{
-            let latClick = e.latLng.lat();
-            let lngClick = e.latLng.lng();
-            $('#modalAddRestaurant').modal('show');
-            this.findAddress(latClick, lngClick);
-            this.addNewRestaurant(latClick, lngClick);
-            $('.closeModalAddRestaurant').click(this.closeModalAddRestaurant());
-            
+            let sizeMap = Math.round($(this.map.getDiv()).children().eq(0).width());
+            let sizeScreen = Math.round(window.innerWidth);
+            if (sizeMap !== sizeScreen) {
+                let latClick = e.latLng.lat();
+                let lngClick = e.latLng.lng();
+                $('#modalAddRestaurant').modal('show');
+                this.findAddress(latClick, lngClick);
+                $('.closeModalAddRestaurant').click(this.closeModalAddRestaurant());
+            }
+            else {
+                alert("L'ajout de restaurant n'est pas autoriser en fullscreen");
+            }
         });
     }
     
+    // méthode qui recuper l'adresse grace au coordonées GPS
     findAddress(latClick, lngClick){
-        let geocoder = new google.maps.Geocoder(); //module pour récupérer un nom en fonction des coordonnées GPS
+        let geocoder = new google.maps.Geocoder(); 
         let latlng = {
             lat: latClick,
             lng: lngClick
@@ -297,21 +350,43 @@ class App {
         geocoder.geocode({'latLng': latlng}, (results, status)=> {
             if (status == google.maps.GeocoderStatus.OK) {
                 $('#form-address').val(results[0].formatted_address);
+                for (let i of results[0].address_components) {
+                    if(i.types[0] == 'country') {
+                        this.country = i.long_name;
+                    }
+                }
             }
             else {
                 $('#form-address').attr('placeholder', 'ex: 91 Rue Antoine de Très, 84240 La Tour-d\'Aigues')
             }
+            this.findPatternPhone();
+            this.addNewRestaurant(latClick, lngClick);
         });
     }
+
+    // méthode qui définit le pattern du numéro de téléphone 
+    findPatternPhone() {
+        let pattern;
+        if (this.country === "France") {
+            pattern = '^0[1-9]{1} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}'
+        }
+        else {
+            pattern = '[0-9]'
+        }
+        $('#form-phone').attr('pattern', pattern);
+    }
     
+    // méthode qui vérifie la validation du formulaire pour l'ajout d'un restaurant
     addNewRestaurant(latClick, lngClick) {
         $('#btnFormAddrestaurant').click(()=>{
-            if (($('#form-name').val() !== "") && ($('#form-address').val() !== "") && ($('#form-name').val() !== "") && ($('#form-star').val() >= 0) && ($('#form-star').val() <= 5) && ($('#form-comment').val() !== "")) {
-                let name = $('#form-name').val();
-                let address = $('#form-address').val();
-                let phone = $('#form-phone').val();
-                let stars = parseFloat($('#form-star').val());
-                let comment = $('#form-comment').val();
+            let patt = new RegExp($('#form-phone').attr('pattern'));
+            let name = $('#form-name').val();
+            let address = $('#form-address').val();
+            let phone = $('#form-phone').val();
+            let stars = parseFloat($('#form-star').val());
+            let comment = $('#form-comment').val();
+
+            if ((name !== "") && (address !== "") && (stars !== "") && (stars >= 0) && (stars <= 5) && ($('#form-comment').val() !== "") && (phone !== "") && (patt.test(phone))) {
                 let id = this.listRestaurant.length
                 let restaurant = new Restaurant(id, name, address, latClick, lngClick, stars, 1);
                 restaurant.recoverElt = true; 
@@ -320,45 +395,49 @@ class App {
                 restaurant.comments.push(comment);
                 restaurant.stars.push(stars);
                 this.listRestaurant.push(restaurant);
+                this.newListRestaurant.push(restaurant);
                 this.createDescription(restaurant);
                 this.closeModalAddRestaurant();
-                
                 $('.messageNoRestaurant').remove();
                 $('#btnFormAddrestaurant').off('click');
             }
-        })
+        });
     }
     
+    // méthode qui gère la ferneture de la boite modal
     closeModalAddRestaurant() {
-            $('#form-name').val("");
-            $('#form-star').val("");
-            $('#form-comment').val("");
-            $('#form-phone').val("");
-            $('#modalAddRestaurant').modal('hide');
+        $('#form-name').val("");
+        $('#form-star').val("");
+        $('#form-comment').val("");
+        $('#form-phone').val("");
+        $('#modalAddRestaurant').modal('hide');
     }
 
+    // envent gragend
     eventDragend() {
         this.map.addListener('dragend', ()=> {
-            this.deleteRestaurant();
             this.findRestaurantPlace(); 
-            console.log(this.newListRestaurant)
+            console.log(this.newListRestaurant);
         });
     }
 
+    // envent zoom
     eventZoomChanged() {
         this.map.addListener('zoom_changed', ()=> {
             this.controlZoomForRestaurant();
-            this.deleteRestaurant();
             this.findRestaurantPlace(); 
+            console.log('zoom')
         });
     }
     
+    // méthode qui gére le zoom
     controlZoomForRestaurant() {
         google.maps.event.clearListeners(this.map, 'click');
         this.controlAddRestaurant();
         this.changeRadiusRequest();
     }
 
+    // méthode qui gère l'ajout de restaurant selon le zoom
     controlAddRestaurant() {
         if (this.map.getZoom() <= 14) {
             this.map.addListener('click',()=>{
@@ -370,9 +449,9 @@ class App {
         }
     }
 
+    // méthode qui change le raduis selon le zoom 
     changeRadiusRequest() {
         let zoom = this.map.getZoom();
-        console.log(zoom);
         if (zoom >= 15) {
             this.radius = 1500;
         }
@@ -385,11 +464,11 @@ class App {
         else if (zoom == 12) {
             this.radius = 8000;
         }
-        else if ((zoom == 11) || (zoom = 10)){
+        else if ((zoom == 11) || (zoom == 10)){
             this.radius = 20000;
         }
         else if (zoom == 9) {
-            this.radius = 5000;
+            this.radius = 50000;
         }
     }
 }

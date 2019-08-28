@@ -1,8 +1,8 @@
 body {
-    background-color: #2c2c2c;
+    background-color: #1e1e1e;
     margin: 0px;
     padding: 0px;
-    color: #1a1a1a;
+    color: white;
 }
 
 body, header, html {
@@ -10,12 +10,42 @@ body, header, html {
 	height: 100%; 
 }
 
-p, h1, h2, h3, h4, h5, h6, label, span {
-    color: white;
+@font-face { /* Définition d'une nouvelle police nommée CAC Champagne */
+    font-family: 'quicksand-bold';
+    src: url('../police/quicksand-bold-webfont.eot');
+    src: url('../police/quicksand-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../police/quicksand-bold-webfont.woff') format('woff'),
+         url('../police/quicksand-bold-webfont.ttf') format('truetype'),
+         url('../police/quicksand-bold-webfont.svg') format('svg');
 }
+
+@font-face { /* Définition d'une nouvelle police nommée CAC Champagne */
+    font-family: 'quicksand-regular';
+    src: url('../police/quicksand-regular-webfont.eot');
+    src: url('../police/quicksand-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../police/quicksand-regular-webfont.woff') format('woff'),
+         url('../police/quicksand-regular-webfont.ttf') format('truetype'),
+         url('../police/quicksand-regular-webfont.svg') format('svg');
+}
+
+.grey {
+    color: #1e1e1e;
+} 
+
+.white {
+    color: #ffffff;
+} 
 
 hr {
     background-color: white;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family: 'quicksand-bold', Arial, serif;
+}
+
+p, span, button {
+    font-family: 'quicksand-regular', Arial, serif;
 }
 
 /* ================= splash image + contenue ================ */
@@ -68,6 +98,9 @@ path {
 }
 
 /* ================= map + coté ================ */
+.modal {
+    z-index: 10000;
+}
 
 #mapTemplate{
     margin-top: 5%;
@@ -83,7 +116,7 @@ path {
 }
 
 .list-group button {
-    background-color: #2c2c2c;
+    background-color: #1e1e1e;
     color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 1) inset;
 }
@@ -93,7 +126,7 @@ path {
 }
 
 .infoWindow {
-    color: #2c2c2c;
+    color: #1e1e1e;
     text-align: center;
 }
 
@@ -106,7 +139,7 @@ form button {
 }
 
 .card {
-    background-color: #2c2c2c;
+    background-color: #1e1e1e;
     height: 100%;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 1) inset ;
 }
@@ -118,7 +151,7 @@ form button {
 /* ================= modal ================ */
 
 .modal-content {
-    background-color: #2c2c2c;
+    background-color: #1e1e1e;
 }
 
 #btnFormAddrestaurant {
