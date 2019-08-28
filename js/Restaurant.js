@@ -157,9 +157,9 @@ class Restaurant {
 
     // fermeture de la boite modal
     closeModalAddCom() {
-            $('#form-AddComment').val("");
-            $('#form-AddStar').val("");
-            $('#modalAddComment').modal('hide');
+        $('#form-AddComment').val("");
+        $('#form-AddStar').val("");
+        $('#modalAddComment').modal('hide');
     }
 
     // requête pour méthode getDetails

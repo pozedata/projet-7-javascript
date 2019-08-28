@@ -17,7 +17,6 @@ class App {
         this.country;
 
         this.transformNoAccent();
-        this.selectionRestaurantByRating();
         $(window).on('addThisOnNewList', (event, data) => {this.addRestaurantOnNewList(data)});
     }
 
@@ -162,6 +161,7 @@ class App {
                 this.selectRestaurantByBounds();
                 this.verfiFakeRestaurant();
                 this.findRestaurantDuplicate();
+                this.selectionRestaurantByRating();
                 this.addRestaurantSelected();
                 this.showBestRestaurant();
             }
